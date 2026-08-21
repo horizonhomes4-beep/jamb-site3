@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Admin Console — MathCloud Tutorial</title>
+<link rel="icon" href="assets/logo.png">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  .chip{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid var(--border);border-radius:99px;font-size:12.5px;margin:3px;cursor:pointer;background:var(--bg-alt);}
+  .chip.on{border-color:var(--amber);color:var(--amber);background:rgba(245,166,35,.08);}
+  .subject-block{border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px;background:var(--surface-2);}
+  .topic-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);}
+  .topic-row:last-child{border-bottom:0;}
+  .dropzone{border:2px dashed var(--border);border-radius:12px;padding:26px;text-align:center;cursor:pointer;}
+  .dropzone:hover{border-color:var(--amber);}
+  .avatar{width:36px;height:36px;border-radius:50%;object-fit:cover;background:var(--surface-2);border:1px solid var(--border);}
+.google-mark{width:20px;height:20px;display:inline-grid;place-items:center;border-radius:50%;background:#fff;color:#4285f4;font-weight:900;font-family:Arial,sans-serif;font-size:14px;margin-right:8px;box-shadow:0 0 0 1px #ffffff30}.google-btn{display:flex!important;align-items:center;justify-content:center}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="flex gap-10">
+    <button class="btn btn-ghost btn-sm" style="display:inline-flex" onclick="mcToggleSidebar()">☰</button>
+    <div class="brand"><div class="brand-badge"><img src="assets/logo.png" onerror="this.parentElement.textContent='MC'"></div>
+      <div>MathCloud Tutorial<small>Admin Console</small></div></div>
+  </div>
+  <div class="flex gap-10">
+    <span class="badge ok" id="onlineBadge">Online</span>
+    <img class="avatar" src="assets/Marshall.png" onerror="this.style.display='none'">
+  </div>
+</div>
+<div class="sidebar-scrim" onclick="mcToggleSidebar()"></div>
+
+<div class="app-shell">
+  <aside class="sidebar">
+    <nav>
+      <a class="active" data-tab="dashboard" onclick="showTab('dashboard')">🏠 Dashboard</a>
+      <a data-tab="students" onclick="showTab('students')">🎓 Students</a>
+      <a data-tab="subjects" onclick="showTab('subjects')">📚 Subjects &amp; Topics</a>
+      <a data-tab="questions" onclick="showTab('questions')">🧩 Question Bank</a>
+      <a data-tab="subscriptions" onclick="showTab('subscriptions')">💳 Subscriptions</a>
+      <a data-tab="devices" onclick="showTab('devices')">📱 Devices</a>
+      <a data-tab="results" onclick="showTab('results')">📊 Results</a>
+      <div class="grp">Session</div>
+      <a onclick="logout()">↩ Log out</a>
+    </nav>
+  </aside>
+
+  <main class="main">
+
+    <!-- DASHBOARD -->
+    <section id="tab-dashboard">
+      <h1 id="greetHead">Good day, Marshall</h1>
+      <p id="dateLine" class="muted"></p>
+      <div class="grid grid-3">
+        <div class="stat"><div class="n" id="statStudents">–</div><div class="l">Total students</div></div>
+        <div class="stat"><div class="n" id="statSubjects">–</div><div class="l">Subjects</div></div>
+        <div class="stat"><div class="n" id="statQuestions">–</div><div class="l">Questions in bank</div></div>
+      </div>
+      <div class="grid grid-3" style="margin-top:14px">
+        <div class="stat"><div class="n" id="statDevices">–</div><div class="l">Devices locked</div></div>
+        <div class="stat stat-clickable" onclick="toggleStatBreakdown('attempts')">
+          <div class="n" id="statAttempts">–</div><div class="l">Test attempts (all time) <span class="stat-chevron" id="chev-attempts">▾</span></div>
+        </div>
+        <div class="stat stat-clickable" onclick="toggleStatBreakdown('avg')">
+          <div class="n" id="statAvg">–</div><div class="l">Platform average score <span class="stat-chevron" id="chev-avg">▾</span></div>
+        </div>
+      </div>
+
+      <div class="card stat-breakdown-panel hide" id="statBreakdownPanel">
+        <div class="flex between" style="flex-wrap:wrap;gap:10px">
+          <h2 id="statBreakdownTitle">Per-student breakdown</h2>
+          <input type="text" id="statBreakdownSearch" placeholder="Search student…" style="max-width:220px" oninput="renderStatBreakdown()">
+        </div>
+        <div class="table-wrap" style="margin-top:10px">
+          <table>
+            <thead><tr><th>Student</th><th>Attempts</th><th>Average score</th><th>Best score</th><th>Last attempt</th></tr></thead>
+            <tbody id="statBreakdownBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Quick actions</h2>
+        <div class="flex gap-10" style="flex-wrap:wrap;margin-top:10px">
+          <button class="btn btn-primary" onclick="showTab('students');openStudentModal()">+ Add student</button>
+          <button class="btn btn-ghost" onclick="showTab('subjects')">Manage subjects</button>
+          <button class="btn btn-ghost" onclick="showTab('questions')">Upload questions</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- STUDENTS -->
+    <section id="tab-students" class="hide">
+      <div class="flex between" style="flex-wrap:wrap;gap:10px">
+        <h1>Students</h1>
+        <button class="btn btn-primary" onclick="openStudentModal()">+ Add student</button>
+      </div>
+      <div class="card">
+        <input type="text" placeholder="Search students by name or email…" oninput="filterStudents(this.value)" style="margin-bottom:12px">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Name</th><th>Email</th><th>Course</th><th>Subjects</th><th>Subscription</th><th>Status</th><th>Device</th><th></th></tr></thead>
+            <tbody id="studentsBody"><tr><td colspan="6" class="muted">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- SUBJECTS & TOPICS -->
+    <section id="tab-subjects" class="hide">
+      <div class="flex between" style="flex-wrap:wrap;gap:10px">
+        <h1>Subjects &amp; Topics</h1>
+        <div class="flex gap-8">
+          <button class="btn btn-primary" onclick="openSubjectModal()">+ Add subject</button>
+        </div>
+      </div>
+      <p class="muted" style="font-size:12.5px;margin-top:-6px">The JAMB subjects and launch data can be seeded with <b>seeder-jamb.html</b>; this tab manages the live Firebase curriculum and question bank — this tab just lets you manage whatever is already in the database.</p>
+      <div id="subjectsList"></div>
+    </section>
+
+    <!-- QUESTIONS -->
+    <section id="tab-questions" class="hide">
+      <h1>Question Bank</h1>
+      <div class="card">
+        <h2>Bulk upload via Excel</h2>
+        <p>Download the standard template, fill it in (one row per question — Subject and Topic names must exactly match what you've created under <b>Subjects &amp; Topics</b>), then upload it here.</p>
+        <div class="flex gap-10" style="flex-wrap:wrap;margin:10px 0">
+          <button class="btn btn-ghost" onclick="downloadTemplate()">⬇ Download sample template (.xlsx)</button>
+        </div>
+        <div class="dropzone" onclick="document.getElementById('xlsxInput').click()" id="dropzone">
+          <div style="font-size:26px">📄</div>
+          <p style="margin-top:8px">Click to choose an .xlsx file, or drag it here</p>
+          <input type="file" id="xlsxInput" accept=".xlsx,.xls" class="hide" onchange="handleExcel(this.files[0])">
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="flex between" style="flex-wrap:wrap;gap:10px">
+          <h2>Add a single question</h2>
+        </div>
+        <div class="grid grid-2">
+          <div><label>Subject</label><select id="qSubject" onchange="fillTopicSelect()"></select></div>
+          <div><label>Topic</label><select id="qTopic"></select></div>
+        </div>
+        <label>Question</label><textarea id="qText" placeholder="Type the question…"></textarea>
+        <div class="grid grid-2">
+          <div><label>Option A</label><input id="qA"></div>
+          <div><label>Option B</label><input id="qB"></div>
+          <div><label>Option C</label><input id="qC"></div>
+          <div><label>Option D</label><input id="qD"></div>
+        </div>
+        <div class="grid grid-2">
+          <div><label>Correct option</label><select id="qCorrect"><option>A</option><option>B</option><option>C</option><option>D</option></select></div>
+          <div><label>Difficulty</label><select id="qDifficulty"><option>Easy</option><option selected>Medium</option><option>Hard</option></select></div>
+        </div>
+        <label>Explanation</label><textarea id="qExplain" placeholder="Full worked explanation…"></textarea>
+        <button class="btn btn-primary" style="margin-top:10px" onclick="addSingleQuestion()">Add question</button>
+      </div>
+
+      <div class="card">
+        <h2>Browse question bank</h2>
+        <div class="grid grid-2">
+          <div><label>Subject</label><select id="browseSubject" onchange="fillBrowseTopics();renderQuestionsList()"></select></div>
+          <div><label>Topic</label><select id="browseTopic" onchange="renderQuestionsList()"></select></div>
+        </div>
+        <div id="questionsList" style="margin-top:12px"></div>
+      </div>
+    </section>
+
+    <!-- SUBSCRIPTIONS -->
+    <section id="tab-subscriptions" class="hide">
+      <h1>Subscriptions</h1>
+      <div class="card">
+        <h2>Payment received to</h2>
+        <div class="contact-row"><div class="ic">💳</div><div><div style="font-weight:600">Flutterwave</div><div class="muted" style="font-size:12.5px">Students pay through the configured MathCloud payment link.</div></div></div>
+      </div>
+
+      <div class="card">
+        <div class="flex between" style="flex-wrap:wrap;gap:10px">
+          <h2>Plans &amp; pricing</h2>
+          <button class="btn btn-ghost btn-sm" onclick="openPlanModal()">+ Add plan</button>
+        </div>
+        <div id="plansList" class="grid grid-3" style="margin-top:10px"></div>
+      </div>
+
+      <div class="card">
+        <h2>Pending payment requests</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Student</th><th>Plan</th><th>Amount</th><th>Submitted</th><th></th></tr></thead>
+            <tbody id="pendingRequestsBody"><tr><td colspan="5" class="muted">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>All students — subscription status</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Student</th><th>Status</th><th>Ends</th><th></th></tr></thead>
+            <tbody id="subStudentsBody"><tr><td colspan="4" class="muted">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- DEVICES -->
+    <section id="tab-devices" class="hide">
+      <h1>Devices</h1>
+      <p>Each student account is locked to the first device it logs in on. Unlock a device to allow login from a new phone/PC.</p>
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Student</th><th>Device</th><th>Last seen</th><th></th></tr></thead>
+            <tbody id="devicesBody"><tr><td colspan="4" class="muted">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESULTS -->
+    <section id="tab-results" class="hide">
+      <div class="flex between" style="flex-wrap:wrap;gap:10px">
+        <h1>Results</h1>
+        <button class="btn btn-ghost" onclick="window.print()">🖨 Print</button>
+      </div>
+      <div class="card">
+        <h2>Original result requests</h2>
+        <div id="resultRequestsList" class="muted">Loading requests…</div>
+      </div>
+      <div class="card">
+        <div class="flex gap-10" style="flex-wrap:wrap">
+          <select id="resultsFilter" onchange="renderResults()" style="max-width:280px">
+            <option value="">All students</option>
+          </select>
+          <input type="text" id="resultsSearch" placeholder="Search by student name…" style="max-width:240px;flex:1" oninput="renderResults()">
+        </div>
+        <div class="table-wrap" style="margin-top:12px">
+          <table>
+            <thead><tr><th>Student</th><th>Date</th><th>Type</th><th>Subject/Topic</th><th>Score</th></tr></thead>
+            <tbody id="resultsBody"><tr><td colspan="5" class="muted">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="assets/firebase-config.js"></script>
+<script src="assets/app.js"></script>
+<script>
+window.mcAuthReady = async function(){
+  if(window.firebase && firebase.auth){
+    const a=firebase.auth();
+    if(a.authStateReady) await a.authStateReady();
+    return a.currentUser;
+  }
+  return null;
+};
+</script>
+<script>
+const studentAuthApp = firebase.apps.find(a=>a.name==='MathCloudStudentAdmin') || firebase.initializeApp(firebaseConfig,'MathCloudStudentAdmin');
+const studentAuth = studentAuthApp.auth();
+</script>
+<script>
+  window.MathJax = { tex: { inlineMath: [['$','$'],['\\(','\\)']], displayMath: [['$$','$$'],['\\[','\\]']] }, svg: { fontCache: 'global' } };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js" id="MathJax-script" async></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.snow.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.min.js"></script>
+<script>
+let SUBJECTS = {}, STUDENTS = {}, ALL_RESULTS = [];
+
+// Gate the whole console behind an active RTDB session (see mcAdmin in app.js).
+// This client-side check is just UX — the real enforcement is that every
+// write below carries a session token the database itself verifies.
+const __adminSession = mcAdmin.session();
+let __adminAuthReadyResolve;
+const __adminAuthReady = new Promise(resolve => { __adminAuthReadyResolve = resolve; });
+auth.onAuthStateChanged(user => __adminAuthReadyResolve(user));
+if (!__adminSession){
+  window.location.replace("admin-login.html");
+} else {
+  __adminAuthReady.then(user => { if (!user) window.location.replace("admin-login.html"); else boot(); });
+  // Re-check every minute so an expired session doesn't sit there silently failing writes.
+  setInterval(()=>{ if (!mcAdmin.session()) window.location.replace("admin-login.html"); }, 60000);
+}
+
+function showTab(name){
+  document.querySelectorAll("main > section").forEach(s=>s.classList.add("hide"));
+  document.getElementById("tab-"+name).classList.remove("hide");
+  document.querySelectorAll(".sidebar nav a[data-tab]").forEach(a=>a.classList.toggle("active", a.dataset.tab===name));
+  document.querySelector(".sidebar").classList.remove("open");
+  document.querySelector(".sidebar-scrim").classList.remove("show");
+}
+async function logout(){
+  const ok = await mcConfirm("Log out of the admin console?", {title:"Log out?"});
+  if (ok){ mcAdmin.logout(); await auth.signOut().catch(()=>{}); window.location.replace("admin-login.html"); }
+}
+
+async function migrateLegacyStudentPasswords(){
+  try{
+    const snap = await db.ref("students").once("value");
+    const updates = {};
+    snap.forEach(c=>{
+      const s=c.val()||{};
+      if (s.passwordHash){
+        updates["studentCredentials/"+c.key] = {
+          passwordHash:s.passwordHash,
+          updatedAt:Date.now(),
+          _writerId:mcAdmin.session().adminId,
+          _writerToken:mcAdmin.session().token
+        };
+        updates["students/"+c.key+"/passwordHash"] = null;
+        updates["settings/studentIndex/"+mcDbKey(s.email)] = c.key;
+      }
+    });
+    if(Object.keys(updates).length) await db.ref().update(updates);
+  }catch(e){ console.warn("Legacy credential migration skipped",e); }
+}
+
+async function boot(){
+  const currentUser = await __adminAuthReady;
+  if (!currentUser){ window.location.replace("admin-login.html"); return; }
+  const isAdminSnap = await db.ref("settings/adminUsers/"+currentUser.uid).once("value");
+  if (isAdminSnap.val() !== true){ await auth.signOut().catch(()=>{}); window.location.replace("admin-login.html"); return; }
+  document.getElementById("greetHead").textContent = mcGreeting((mcAdmin.session()||{}).name?.split(" ")[0] || "Admin");
+  document.getElementById("dateLine").textContent = mcDateStamp();
+  await migrateLegacyStudentPasswords(); await Promise.all([loadSubjects(), loadStudents(), loadResultsData(), loadPlans(), loadJambCatalog()]);
+  renderDashboardStats();
+  renderSubjectsList();
+  renderStudentsTable();
+  renderDevicesTable();
+  fillSubjectSelects();
+  renderResults();
+  renderPlansList();
+  renderSubStudentsTable();
+  loadPendingRequests();
+  mcInitConnectionWatcher();
+  db.ref("students").on("value", ()=>{ loadStudents().then(()=>{renderStudentsTable();renderDevicesTable();renderDashboardStats();renderSubStudentsTable();}); });
+  db.ref("subjects").on("value", ()=>{ loadSubjects().then(()=>{renderSubjectsList();fillSubjectSelects();renderDashboardStats();}); });
+  db.ref("settings/plans").on("value", ()=>{ loadPlans().then(renderPlansList); });
+  db.ref("subscriptionRequests").on("value", ()=>{ loadPendingRequests(); });
+   db.ref("resultRequests").on("value", ()=>{ renderResultRequests(); });
+}
+
+/* ---------------- Data loaders ---------------- */
+async function loadSubjects(){
+  const s = await db.ref("subjects").once("value");
+  const raw = s.val() || {};
+  SUBJECTS = {};
+  Object.entries(raw).forEach(([sid, sub])=>{
+    if (!sub || sub._deleted === true) return;
+    SUBJECTS[sid] = { ...sub, topics: sub.topics || {} };
+  });
+}
+async function loadStudents(){ const s = await db.ref("students").once("value"); STUDENTS = s.val() || {}; }
+async function loadResultsData(){
+  const s = await db.ref("results").once("value");
+  const val = s.val() || {};
+  ALL_RESULTS = [];
+  Object.entries(val).forEach(([sid, attempts])=>{
+    Object.entries(attempts||{}).forEach(([aid, r])=>ALL_RESULTS.push({studentId:sid, id:aid, ...r}));
+  });
+}
+
+function renderDashboardStats(){
+  const students = Object.values(STUDENTS);
+  document.getElementById("statStudents").textContent = students.length;
+  document.getElementById("statSubjects").textContent = Object.keys(SUBJECTS).length;
+  let qCount = 0;
+  Object.values(SUBJECTS).forEach(s=>{}); // question count computed async below
+  db.ref("questions").once("value").then(s=>{
+    let c=0; const v=s.val()||{};
+    Object.values(v).forEach(topics=>Object.values(topics||{}).forEach(qs=>c+=Object.keys(qs||{}).length));
+    document.getElementById("statQuestions").textContent = c;
+  });
+  document.getElementById("statDevices").textContent = students.filter(s=>s.deviceId).length;
+  document.getElementById("statAttempts").textContent = ALL_RESULTS.length;
+  document.getElementById("statAvg").textContent = ALL_RESULTS.length ? Math.round(ALL_RESULTS.reduce((a,r)=>a+r.scorePct,0)/ALL_RESULTS.length)+"%" : "–";
+  if (!document.getElementById("statBreakdownPanel").classList.contains("hide")) renderStatBreakdown();
+}
+
+let __statBreakdownOpen = null;
+function toggleStatBreakdown(which){
+  const panel = document.getElementById("statBreakdownPanel");
+  const opening = __statBreakdownOpen !== which || panel.classList.contains("hide");
+  __statBreakdownOpen = opening ? which : null;
+  panel.classList.toggle("hide", !opening);
+  ["attempts","avg"].forEach(k=>document.getElementById("chev-"+k).style.transform = (opening && k===which) ? "rotate(180deg)" : "");
+  document.getElementById("statBreakdownTitle").textContent = which === "avg" ? "Per-student average score" : "Per-student test attempts";
+  if (opening){ document.getElementById("statBreakdownSearch").value=""; renderStatBreakdown(); panel.scrollIntoView({behavior:"smooth", block:"nearest"}); }
+}
+function renderStatBreakdown(){
+  const q = (document.getElementById("statBreakdownSearch").value||"").trim().toLowerCase();
+  const byStudent = {};
+  ALL_RESULTS.forEach(r=>{
+    if (!byStudent[r.studentId]) byStudent[r.studentId] = { attempts:0, sum:0, best:0, last:0 };
+    const b = byStudent[r.studentId];
+    b.attempts++; b.sum += r.scorePct; b.best = Math.max(b.best, r.scorePct); b.last = Math.max(b.last, r.finishedAt||0);
+  });
+  let rows = Object.entries(byStudent).map(([sid,b])=>({
+    sid, name: (STUDENTS[sid]||{}).name || "Unknown student",
+    attempts: b.attempts, avg: Math.round(b.sum/b.attempts), best: b.best, last: b.last
+  }));
+  if (q) rows = rows.filter(r=>r.name.toLowerCase().includes(q));
+  rows.sort((a,b)=> __statBreakdownOpen==="avg" ? b.avg-a.avg : b.attempts-a.attempts);
+  document.getElementById("statBreakdownBody").innerHTML = rows.length ? rows.map(r=>`
+    <tr>
+      <td><b>${r.name}</b></td>
+      <td>${r.attempts}</td>
+      <td><b style="color:${r.avg>=70?'var(--green)':r.avg>=40?'var(--amber)':'var(--red)'}">${r.avg}%</b></td>
+      <td>${r.best}%</td>
+      <td class="muted">${r.last ? new Date(r.last).toLocaleDateString() : "—"}</td>
+    </tr>`).join("") : `<tr><td colspan="5" class="muted">${q ? "No matching students." : "No test attempts yet."}</td></tr>`;
+}
+
+/* ---------------- STUDENTS ---------------- */
+function renderStudentsTable(filter=""){
+  const body = document.getElementById("studentsBody");
+  const entries = Object.entries(STUDENTS).filter(([id,s])=>!filter || (s.name||"").toLowerCase().includes(filter.toLowerCase()) || (s.email||"").toLowerCase().includes(filter.toLowerCase()));
+  body.innerHTML = entries.length ? entries.map(([id,s])=>`
+    <tr>
+      <td><b>${s.name||"—"}</b></td>
+      <td class="mono muted">${s.email||"—"}</td>
+      <td>${s.courseName||"—"}</td>
+      <td>${Object.keys(s.assignedSubjects||{}).map(sid=>(SUBJECTS[sid]||{}).name||sid).join(", ")||"—"}</td>
+      <td>${mcSubscriptionActive(s)?`<span class="badge ok">Active</span>`:`<span class="badge bad">${s.subscription?.status||"Not approved"}</span>`}</td>
+      <td>${s.status==="pending" ? `<span class="badge warn">Pending activation</span>` : s.status==="suspended" ? `<span class="badge bad">Suspended</span>` : `<span class="badge ok">Active</span>`}</td>
+      <td>${s.deviceId ? `<span class="badge warn">Locked</span>` : `<span class="badge">Not set</span>`}</td>
+      <td>
+        <div class="flex gap-8">
+          <button class="btn btn-sm btn-ghost" onclick="openStudentModal('${id}')">Edit</button>
+          ${s.status==='pending' ? `<button class="btn btn-sm btn-primary" onclick="activateStudent('${id}')">Activate</button>` : ""}
+          ${s.deviceId ? `<button class="btn btn-sm btn-ghost" onclick="unlockDevice('${id}')">Unlock</button>` : ""}
+          ${s.status!=='pending' ? `<button class="btn btn-sm ${s.status==='suspended'?'btn-ghost':'btn-danger'}" onclick="toggleSuspend('${id}')">${s.status==='suspended'?'Reactivate':'Suspend'}</button>` : ""}
+        </div>
+      </td>
+    </tr>`).join("") : `<tr><td colspan="8" class="muted">No students yet — click "Add student" to create one.</td></tr>`;
+}
+function filterStudents(v){ renderStudentsTable(v); }
+
+async function openStudentModal(id){
+  const s = id ? STUDENTS[id] : null;
+  const catalogCourses = (window.JAMB_CATALOG?.courses || []).map(c=>`<option value="${c.id}" ${s&&s.courseId===c.id?'selected':''}>${c.name}</option>`).join('');
+  const selectedIds = new Set(Object.keys(s?.assignedSubjects||{}));
+  const html = `
+    <label>Full name</label><input id="mName" value="${s?mcEscape(s.name||''):''}">
+    <label>Email</label><input id="mEmail" type="email" value="${s?mcEscape(s.email||''):''}">
+    <label>${s?'Password (managed by Firebase Auth; leave blank)':'Password'}</label><input id="mPassword" type="password" placeholder="${s?'Leave blank — use password reset email':'Set an initial password'}" ${s?'disabled':''}>
+    <label>Course / programme</label>
+    <select id="mCourseId" onchange="autoAssignCourseSubjects()">
+      <option value="">Select course</option>${catalogCourses}
+    </select>
+    <div id="mCourseCombination" class="notice" style="margin-top:8px">${s?'Current subjects are shown below. Choose a course to auto-select its recommended UTME combination.':'Choose a course and the recommended UTME subjects will be selected automatically.'}</div>
+    <label style="margin-top:10px">Assigned / selected subjects</label>
+    <div id="mSubjects">${renderAdminSubjectChoices(selectedIds)}</div>
+  `;
+  const v = await mcModal({
+    icon:"info", title: id ? "Edit student" : "Add student", wide:true, html,
+    actions:[{label:"Cancel", value:false, style:"ghost"},{label: id ? "Save changes":"Create & activate student", value:true, style:"primary"}]
+  });
+  if (!v) return;
+  const name = document.getElementById("mName")?.value?.trim();
+  const email = document.getElementById("mEmail")?.value?.trim().toLowerCase();
+  const password = document.getElementById("mPassword")?.value;
+  const courseId = document.getElementById("mCourseId")?.value;
+  const course = (window.JAMB_CATALOG?.courses || []).find(c=>c.id===courseId);
+  const courseName = course?.name || (id && STUDENTS[id].courseName) || "";
+  if (!name || !email || (!id && !password) || (!id && !courseId)){ await mcAlert("Name, email, password and course are required when creating a student.",{icon:"error"}); return; }
+  const chosenSubjects = {};
+  document.querySelectorAll("#mSubjects input[data-sid]:checked").forEach(c=>chosenSubjects[c.dataset.sid]=true);
+  if (!Object.keys(chosenSubjects).length){ await mcAlert("At least one JAMB subject must be selected.",{icon:"error"}); return; }
+  await saveStudent(id, name, email, password, chosenSubjects, courseName, courseId);
+}
+function mcEscape(v){ return String(v??'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function renderAdminSubjectChoices(selectedIds=new Set()){
+  return Object.entries(SUBJECTS).map(([sid,sub])=>`<label class="check" style="display:flex;margin:5px 0;padding:8px"><input type="checkbox" data-sid="${sid}" ${selectedIds.has(sid)?'checked':''}><span>${mcEscape(sub.name)}</span></label>`).join('') || '<p class="muted">No subjects loaded yet.</p>';
+}
+function autoAssignCourseSubjects(){
+  const cid=document.getElementById('mCourseId')?.value;
+  const c=(window.JAMB_CATALOG?.courses||[]).find(x=>x.id===cid);
+  if(!c)return;
+  const ids=[];
+  for(const item of c.required){
+    if(c.alternatives&&c.alternatives[item]) ids.push(c.alternatives[item][0]); else ids.push(item);
+  }
+  document.querySelectorAll('#mSubjects input[data-sid]').forEach(cb=>cb.checked=ids.includes(cb.dataset.sid));
+  const names=ids.map(id=>(SUBJECTS[id]||{}).name||id);
+  const box=document.getElementById('mCourseCombination'); if(box) box.innerHTML=`<b>${mcEscape(c.name)}</b><br><span class="muted">Auto-selected UTME combination: ${names.map(mcEscape).join(', ')}</span><br><span class="muted">For alternative groups, the first recommended option is selected for quick creation; you can adjust the subjects before saving.</span>`;
+}
+
+async function saveStudent(id, name, email, password, chosenSubjects, courseName, courseId){
+  try{
+    const data = {
+      name, email, courseId: courseId || (id && STUDENTS[id].courseId) || "", courseName: courseName || (id && STUDENTS[id].courseName) || "", assignedSubjects: chosenSubjects,
+      status: (id && STUDENTS[id].status) || "active"
+    };
+    const updates = {};
+    const studentId = id || db.ref("students").push().key;
+
+    if (!id){
+      if (!password){ await mcAlert("Please set an initial password for the new student.", {icon:"error"}); return; }
+      const cred = await studentAuth.createUserWithEmailAndPassword(email, password);
+      data.authUid = cred.user.uid;
+      data.courseLocked = true;
+      data.subjectSelectionLocked = true;
+      data.selectedSubjects = Object.keys(chosenSubjects);
+      data.subscription = {status:"none"};
+      data.createdAt = Date.now();
+      data.deviceId = null;
+      await studentAuth.signOut();
+    }
+
+    data._writerId = mcAdmin.session().adminId;
+    data._writerToken = mcAdmin.session().token;
+    updates["students/"+studentId] = data;
+    updates["settings/studentIndex/"+mcDbKey(email)] = studentId;
+    if(data.authUid) updates["studentByAuthUid/"+data.authUid] = studentId;
+
+    await db.ref().update(updates);
+    mcToast(id ? "Student updated" : "Student created", "ok");
+    await loadStudents();
+    renderStudentsTable();
+  }catch(e){
+    console.error(e);
+    mcAlert("Could not save student. Check your connection and try again.", {icon:"error"});
+  }
+}
+async function activateStudent(id){
+  const s=STUDENTS[id]; if(!s)return;
+  const ok=await mcConfirm(`Activate ${s.name}'s student account? They will then be able to log in to the Student Dashboard.`,{title:"Activate student account?"});
+  if(!ok)return;
+  await mcAdmin.write("students/"+id,{status:"active"});
+  mcToast("Student account activated","ok");
+  await loadStudents(); renderStudentsTable();
+}
+async function unlockDevice(id){
+  const ok = await mcConfirm(`Unlock ${STUDENTS[id].name}'s account so they can log in on a new device?`, {title:"Unlock device?"});
+  if (!ok) return;
+  await mcAdmin.write("students/"+id, { deviceId: null, deviceInfo: null });
+  mcToast("Device unlocked", "ok");
+}
+async function toggleSuspend(id){
+  const suspend = STUDENTS[id].status !== "suspended";
+  const ok = await mcConfirm(suspend ? "Suspend this student's account? They won't be able to log in." : "Reactivate this student's account?", {title: suspend?"Suspend account?":"Reactivate account?", danger:suspend});
+  if (!ok) return;
+  await mcAdmin.write("students/"+id, { status: suspend ? "suspended" : "active" });
+  mcToast(suspend?"Account suspended":"Account reactivated", "ok");
+}
+
+/* ---------------- SUBSCRIPTIONS & PLANS ---------------- */
+let PLANS = {};
+async function loadPlans(){
+  const s = await db.ref("settings/plans").once("value");
+  PLANS = s.val() || {};
+  if(!Object.keys(PLANS).length){
+    PLANS = mcDefaultPlans();
+    for(const [id,p] of Object.entries(PLANS)) await mcAdmin.write("settings/plans/"+id,p);
+  }
+}
+async function loadJambCatalog(){
+  const s=await db.ref("jambCatalog").once("value");
+  window.JAMB_CATALOG=s.val()||{courses:[],subjects:[]};
+}
+
+function renderPlansList(){
+  const wrap = document.getElementById("plansList");
+  if (!wrap) return;
+  const entries = Object.entries(PLANS).sort((a,b)=>a[1].months-b[1].months);
+  wrap.innerHTML = entries.length ? entries.map(([id,p])=>`
+    <div class="card">
+      <div class="flex between"><h3>${p.label}</h3>
+        <div class="flex gap-8">
+          <button class="btn btn-sm btn-ghost" onclick="openPlanModal('${id}')">Edit</button>
+          <button class="btn btn-sm btn-danger" onclick="deletePlan('${id}')">Delete</button>
+        </div>
+      </div>
+      <div class="plan-price">₦${p.price.toLocaleString()}</div>
+      <div class="muted" style="font-size:12.5px">${p.months} month${p.months>1?'s':''} · ₦${Math.round(p.price/p.months).toLocaleString()}/month</div>
+    </div>`).join("") : `<p class="muted">No plans yet. Add a 1-month plan first, then longer plans with discounts.</p>`;
+}
+async function openPlanModal(id){
+  const p = id ? PLANS[id] : null;
+  const html = `
+    <label>Plan label</label><input id="planLabel" value="${p?p.label:''}" placeholder="e.g. 3 Months">
+    <label>Duration (months)</label><input id="planMonths" type="number" min="1" value="${p?p.months:''}">
+    <label>Total price (₦)</label><input id="planPrice" type="number" min="0" value="${p?p.price:''}">
+  `;
+  const v = await mcModal({title: id?"Edit plan":"Add plan", html,
+    actions:[{label:"Cancel", value:false, style:"ghost"},{label:"Save", value:true, style:"primary"}]});
+  if (!v) return;
+  const label = document.getElementById("planLabel")?.value?.trim();
+  const months = Number(document.getElementById("planMonths")?.value);
+  const price = Number(document.getElementById("planPrice")?.value);
+  if (!label || !months || price < 0){ await mcAlert("Please fill in a label, valid duration and price.", {icon:"error"}); return; }
+  if (id){ await mcAdmin.write("settings/plans/"+id, {label, months, price}); }
+  else { await mcAdmin.push("settings/plans", {label, months, price}); }
+  mcToast("Plan saved","ok");
+}
+async function deletePlan(id){
+  const ok = await mcConfirm(`Delete the "${PLANS[id].label}" plan?`, {title:"Delete plan?", danger:true});
+  if (!ok) return;
+  await mcAdmin.remove("settings/plans/"+id);
+  mcToast("Plan deleted","ok");
+}
+
+async function loadPendingRequests(){
+  const snap = await db.ref("subscriptionRequests").orderByChild("status").equalTo("pending").once("value");
+  const val = snap.val() || {};
+  const entries = Object.entries(val).sort((a,b)=>a[1].submittedAt-b[1].submittedAt);
+  const body = document.getElementById("pendingRequestsBody");
+  if (!body) return;
+  body.innerHTML = entries.length ? entries.map(([id,r])=>`
+    <tr>
+      <td><b>${r.studentName}</b></td>
+      <td>${r.planLabel}</td>
+      <td>₦${Number(r.amount).toLocaleString()}</td>
+      <td class="muted">${new Date(r.submittedAt).toLocaleString()}<br><b>Ref:</b> ${r.transactionReference||"—"}</td>
+      <td>
+        <div class="flex gap-8">
+          <button class="btn btn-sm btn-primary" onclick="approveRequest('${id}')">Approve</button>
+          <button class="btn btn-sm btn-danger" onclick="rejectRequest('${id}')">Reject</button>
+        </div>
+      </td>
+    </tr>`).join("") : `<tr><td colspan="5" class="muted">No pending requests. Completed Flutterwave payment submissions will appear here for verification.</td></tr>`;
+}
+async function approveRequest(id){
+  const snap = await db.ref("subscriptionRequests/"+id).once("value");
+  const r = snap.val();
+  if (!r) return;
+  const plan = PLANS[r.planId];
+  if (!plan){ await mcAlert("That plan no longer exists.", {icon:"error"}); return; }
+  const ok = await mcConfirm(`Confirm you've verified ${r.studentName}'s WhatsApp receipt for ${r.planLabel} (₦${r.amount.toLocaleString()})? This will activate their subscription immediately.`, {title:"Approve payment?"});
+  if (!ok) return;
+  const student = STUDENTS[r.studentId] || {};
+  const now = Date.now();
+  const base = mcSubscriptionActive(student) ? student.subscription.endAt : now; // stack renewals on top of remaining time
+  const endAt = base + plan.months * 30 * 24 * 60 * 60 * 1000;
+  // Nested under students/{id} (not a top-level node), so it goes through the
+  // student's own ancestor rule — writeNested keeps the other subscription
+  // sub-fields (like history) intact instead of replacing the whole object.
+  await mcAdmin.writeNested("students/"+r.studentId, {
+    "subscription/status": "active", "subscription/plan": r.planLabel, "subscription/startAt": now, "subscription/endAt": endAt
+  });
+  await mcAdmin.write("subscriptionRequests/"+id, { status:"approved", reviewedAt: now });
+  mcToast("Subscription activated","ok");
+}
+async function rejectRequest(id){
+  const ok = await mcConfirm("Reject this payment request? Use this if the receipt couldn't be verified.", {title:"Reject request?", danger:true});
+  if (!ok) return;
+  await mcAdmin.write("subscriptionRequests/"+id, { status:"rejected", reviewedAt: Date.now() });
+  mcToast("Request rejected","ok");
+}
+
+function renderSubStudentsTable(){
+  const body = document.getElementById("subStudentsBody");
+  if (!body) return;
+  const entries = Object.entries(STUDENTS);
+  body.innerHTML = entries.length ? entries.map(([id,s])=>{
+    const active = mcSubscriptionActive(s);
+    return `<tr>
+      <td><b>${s.name}</b><div class="muted mono" style="font-size:11.5px">${s.email}</div></td>
+      <td>${active ? `<span class="badge ok">Active</span>` : `<span class="badge bad">Inactive</span>`}</td>
+      <td class="muted">${s.subscription && s.subscription.endAt ? new Date(s.subscription.endAt).toLocaleDateString() : "—"}</td>
+      <td><button class="btn btn-sm btn-ghost" onclick="openManualSubModal('${id}')">Grant / extend</button></td>
+    </tr>`;
+  }).join("") : `<tr><td colspan="4" class="muted">No students yet.</td></tr>`;
+}
+async function openManualSubModal(id){
+  const s = STUDENTS[id];
+  const entries = Object.entries(PLANS).sort((a,b)=>a[1].months-b[1].months);
+  if (!entries.length){ await mcAlert("Add at least one plan first.", {icon:"warn"}); return; }
+  const html = `<p>Manually grant or extend <b>${s.name}</b>'s subscription (e.g. for cash payments taken outside the app).</p>
+    <label>Plan / duration</label>
+    <select id="manualPlan">${entries.map(([pid,p])=>`<option value="${pid}">${p.label} (${p.months} month${p.months>1?'s':''})</option>`).join("")}</select>`;
+  const v = await mcModal({title:"Grant subscription", html,
+    actions:[{label:"Cancel", value:false, style:"ghost"},{label:"Activate", value:true, style:"primary"}]});
+  if (!v) return;
+  const planId = document.getElementById("manualPlan")?.value;
+  const plan = PLANS[planId];
+  const now = Date.now();
+  const base = mcSubscriptionActive(s) ? s.subscription.endAt : now;
+  const endAt = base + plan.months * 30 * 24 * 60 * 60 * 1000;
+  await mcAdmin.writeNested("students/"+id, { "subscription/status":"active", "subscription/plan": plan.label, "subscription/startAt": now, "subscription/endAt": endAt });
+  mcToast("Subscription granted","ok");
+}
+
+/* ---------------- SUBJECTS & TOPICS ---------------- */
+/* Subject/topic/question curriculum data no longer lives in front-end code.
+   It is seeded directly into Firebase by the standalone seeder-jamb.html
+   script (run once, outside of this app). This console only manages whatever
+   is already in the database. */
+
+function renderSubjectsList(){
+  const wrap = document.getElementById("subjectsList");
+  const entries = Object.entries(SUBJECTS);
+  wrap.innerHTML = entries.length ? entries.map(([sid,sub])=>`
+    <div class="subject-block">
+      <div class="flex between">
+        <h3>${sub.name}</h3>
+        <div class="flex gap-8">
+          <button class="btn btn-sm btn-ghost" onclick="openTopicModal('${sid}')">+ Add topic</button>
+          <button class="btn btn-sm btn-danger" onclick="deleteSubject('${sid}')">Delete subject</button>
+        </div>
+      </div>
+      <div style="margin-top:8px">
+        ${Object.entries(sub.topics||{}).map(([tid,t])=>`
+          <div class="topic-row">
+            <div><b>${t.name}</b><div class="muted" style="font-size:12.5px">${(()=>{const plain=(t.explanation||'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim(); return plain ? plain.slice(0,90)+(plain.length>90?'…':'') : 'No notes yet';})()}</div></div>
+            <div class="flex gap-8">
+              <button class="btn btn-sm btn-ghost" onclick="openTopicModal('${sid}','${tid}')">Edit</button>
+              <button class="btn btn-sm btn-danger" onclick="deleteTopic('${sid}','${tid}')">Delete</button>
+            </div>
+          </div>`).join("") || `<p class="muted">No topics yet.</p>`}
+      </div>
+    </div>`).join("") : `<p class="muted">No subjects yet — click "Add subject" to create JAMB subjects like Mathematics, English, Physics…</p>`;
+}
+async function openSubjectModal(){
+  const v = await mcModal({title:"Add subject", html:`<label>Subject name</label><input id="mSubName" placeholder="e.g. Mathematics">`,
+    actions:[{label:"Cancel", value:false, style:"ghost"},{label:"Add", value:true, style:"primary"}]});
+  if (!v) return;
+  const name = document.getElementById("mSubName")?.value?.trim();
+  if (!name) return;
+  await mcAdmin.push("subjects", {name, topics:{}});
+  mcToast("Subject added","ok");
+}
+/* The question bank has no single container-level rule (only individual questions
+   are admin-gated), so a whole-subject or whole-topic delete removes each question
+   one at a time rather than one bulk .remove() — slower, but it only relies on the
+   already-verified per-question rule instead of a new, harder-to-reason-about one. */
+async function cascadeDeleteQuestions(sid, tid){
+  const path = tid ? `questions/${sid}/${tid}` : `questions/${sid}`;
+  const snap = await db.ref(path).once("value");
+  const val = snap.val();
+  if (!val) return;
+  const jobs = [];
+  if (tid){
+    Object.keys(val).forEach(qid => jobs.push(mcAdmin.remove(`questions/${sid}/${tid}/${qid}`)));
+  } else {
+    Object.entries(val).forEach(([tKey, qs])=>{
+      Object.keys(qs||{}).forEach(qid => jobs.push(mcAdmin.remove(`questions/${sid}/${tKey}/${qid}`)));
+    });
+  }
+  await Promise.all(jobs);
+}
+async function deleteSubject(sid){
+  const ok = await mcConfirm(`Delete "${SUBJECTS[sid].name}" and all its topics/questions? This cannot be undone.`, {title:"Delete subject?", danger:true});
+  if (!ok) return;
+  await cascadeDeleteQuestions(sid);
+  await mcAdmin.remove("subjects/"+sid);
+  mcToast("Subject deleted","ok");
+}
+async function openTopicModal(sid, tid){
+  const t = tid ? SUBJECTS[sid].topics[tid] : null;
+  const html = `<label>Topic name</label><input id="mTopName" value="${t?t.name:''}">
+    <label>Notes (rich text — use $x^2$ for inline math, $$...$$ for display equations)</label>
+    <div id="mTopEditor"></div>`;
+  const p = mcModal({title: tid ? "Edit topic" : "Add topic", wide:true, html,
+    actions:[{label:"Cancel", value:false, style:"ghost"},{label:"Save", value:true, style:"primary"}]});
+  const quill = new Quill('#mTopEditor', {
+    theme: 'snow',
+    modules: { toolbar: [['bold','italic','underline'],[{list:'ordered'},{list:'bullet'}],['blockquote','code-block'],['link','image'],['clean']] }
+  });
+  if (t && t.explanation) quill.root.innerHTML = t.explanation;
+  const v = await p;
+  if (!v) return;
+  const name = document.getElementById("mTopName")?.value?.trim();
+  const explanation = quill.root.innerHTML;
+  if (!name) return;
+  // Topics live nested inside subjects/{sid}, governed by that subject's own
+  // rule — writeNested puts the session proof at the subject's top level in
+  // the same call, which is what the ancestor rule actually checks.
+  const topicId = tid || db.ref().push().key;
+  await mcAdmin.writeNested(`subjects/${sid}`, { [`topics/${topicId}/name`]: name, [`topics/${topicId}/explanation`]: explanation });
+  mcToast("Topic saved","ok");
+}
+async function deleteTopic(sid, tid){
+  const ok = await mcConfirm("Delete this topic and all its questions?", {title:"Delete topic?", danger:true});
+  if (!ok) return;
+  await cascadeDeleteQuestions(sid, tid);
+  await mcAdmin.writeNested(`subjects/${sid}`, { [`topics/${tid}`]: null });
+  mcToast("Topic deleted","ok");
+}
+
+/* ---------------- QUESTION BANK ---------------- */
+function fillSubjectSelects(){
+  const opts = Object.entries(SUBJECTS).map(([sid,s])=>`<option value="${sid}">${s.name}</option>`).join("");
+  ["qSubject","browseSubject"].forEach(id=>{ const el=document.getElementById(id); if(el){ el.innerHTML = opts || `<option value="">No subjects</option>`; } });
+  fillTopicSelect(); fillBrowseTopics(); renderQuestionsList();
+}
+function fillTopicSelect(){
+  const sid = document.getElementById("qSubject").value;
+  const topics = (SUBJECTS[sid]||{}).topics || {};
+  document.getElementById("qTopic").innerHTML = Object.entries(topics).map(([tid,t])=>`<option value="${tid}">${t.name}</option>`).join("") || `<option value="">No topics</option>`;
+}
+function fillBrowseTopics(){
+  const sid = document.getElementById("browseSubject").value;
+  const topics = (SUBJECTS[sid]||{}).topics || {};
+  document.getElementById("browseTopic").innerHTML = Object.entries(topics).map(([tid,t])=>`<option value="${tid}">${t.name}</option>`).join("") || `<option value="">No topics</option>`;
+}
+async function addSingleQuestion(){
+  const sid = document.getElementById("qSubject").value, tid = document.getElementById("qTopic").value;
+  const question = document.getElementById("qText").value.trim();
+  const optionA = document.getElementById("qA").value.trim(), optionB = document.getElementById("qB").value.trim();
+  const optionC = document.getElementById("qC").value.trim(), optionD = document.getElementById("qD").value.trim();
+  const correct = document.getElementById("qCorrect").value;
+  const difficulty = document.getElementById("qDifficulty").value;
+  const explanation = document.getElementById("qExplain").value.trim();
+  if (!sid || !tid || !question || !optionA || !optionB){ await mcAlert("Please fill in the subject, topic, question and at least options A & B.", {icon:"error"}); return; }
+  await mcAdmin.push(`questions/${sid}/${tid}`, {question, optionA, optionB, optionC, optionD, correct, difficulty, explanation, createdAt:Date.now()});
+  ["qText","qA","qB","qC","qD","qExplain"].forEach(id=>document.getElementById(id).value="");
+  mcToast("Question added","ok");
+  renderQuestionsList();
+}
+async function renderQuestionsList(){
+  const sid = document.getElementById("browseSubject").value, tid = document.getElementById("browseTopic").value;
+  const wrap = document.getElementById("questionsList");
+  if (!sid || !tid){ wrap.innerHTML = `<p class="muted">Choose a subject and topic to browse questions.</p>`; return; }
+  const snap = await db.ref(`questions/${sid}/${tid}`).once("value");
+  const val = snap.val() || {};
+  const entries = Object.entries(val);
+  wrap.innerHTML = entries.length ? entries.map(([qid,q])=>`
+    <div class="card mc-note-render" style="margin-bottom:8px">
+      <div class="flex between"><b>${q.question}</b><span class="badge">${q.difficulty||"Medium"}</span></div>
+      <p style="margin-top:6px;font-size:13px">A) ${q.optionA} &nbsp; B) ${q.optionB} ${q.optionC?`&nbsp; C) ${q.optionC}`:""} ${q.optionD?`&nbsp; D) ${q.optionD}`:""}</p>
+      <p style="font-size:12.5px"><b>Correct:</b> ${q.correct} &nbsp; <b>Explanation:</b> ${q.explanation||"—"}</p>
+      <div class="flex gap-8">
+        <button class="btn btn-sm btn-ghost" onclick="editQuestion('${sid}','${tid}','${qid}')">Edit</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteQuestion('${sid}','${tid}','${qid}')">Delete</button>
+      </div>
+    </div>`).join("") : `<p class="muted">No questions in this topic yet.</p>`;
+  mcTypeset(wrap);
+}
+async function editQuestion(sid, tid, qid){
+  const snap = await db.ref(`questions/${sid}/${tid}/${qid}`).once("value");
+  const q = snap.val();
+  if (!q) return;
+  const html = `
+    <label>Question</label><textarea id="eqText">${q.question||""}</textarea>
+    <div class="grid grid-2">
+      <div><label>Option A</label><input id="eqA" value="${q.optionA||""}"></div>
+      <div><label>Option B</label><input id="eqB" value="${q.optionB||""}"></div>
+      <div><label>Option C</label><input id="eqC" value="${q.optionC||""}"></div>
+      <div><label>Option D</label><input id="eqD" value="${q.optionD||""}"></div>
+    </div>
+    <div class="grid grid-2">
+      <div><label>Correct option</label><select id="eqCorrect">${["A","B","C","D"].map(k=>`<option ${q.correct===k?'selected':''}>${k}</option>`).join("")}</select></div>
+      <div><label>Difficulty</label><select id="eqDifficulty">${["Easy","Medium","Hard"].map(k=>`<option ${q.difficulty===k?'selected':''}>${k}</option>`).join("")}</select></div>
+    </div>
+    <label>Explanation</label><textarea id="eqExplain">${q.explanation||""}</textarea>
+  `;
+  const v = await mcModal({title:"Edit question", wide:true, html,
+    actions:[{label:"Cancel", value:false, style:"ghost"},{label:"Save changes", value:true, style:"primary"}]});
+  if (!v) return;
+  await mcAdmin.write(`questions/${sid}/${tid}/${qid}`, {
+    question: document.getElementById("eqText").value.trim(),
+    optionA: document.getElementById("eqA").value.trim(),
+    optionB: document.getElementById("eqB").value.trim(),
+    optionC: document.getElementById("eqC").value.trim(),
+    optionD: document.getElementById("eqD").value.trim(),
+    correct: document.getElementById("eqCorrect").value,
+    difficulty: document.getElementById("eqDifficulty").value,
+    explanation: document.getElementById("eqExplain").value.trim()
+  });
+  mcToast("Question updated","ok");
+  renderQuestionsList();
+}
+async function deleteQuestion(sid,tid,qid){
+  const ok = await mcConfirm("Delete this question?", {title:"Delete question?", danger:true});
+  if (!ok) return;
+  await mcAdmin.remove(`questions/${sid}/${tid}/${qid}`);
+  renderQuestionsList();
+}
+
+/* ---------------- Excel bulk upload ---------------- */
+function downloadTemplate(){
+  window.location.href = "assets/mathcloud-question-upload-template.xlsx";
+}
+async function handleExcel(file){
+  if (!file) return;
+  const buf = await file.arrayBuffer();
+  const wb = XLSX.read(buf, {type:"array"});
+  const sheet = wb.Sheets[wb.SheetNames[0]];
+  const rows = XLSX.utils.sheet_to_json(sheet, {defval:""});
+  if (!rows.length){ await mcAlert("That file has no rows to import.", {icon:"error"}); return; }
+
+  const subjectByName = {}; Object.entries(SUBJECTS).forEach(([id,s])=>subjectByName[(s.name||"").trim().toLowerCase()]=id);
+  let valid=0, invalid=[], writes={};
+  rows.forEach((r,idx)=>{
+    const subjectName = String(r.Subject||"").trim();
+    const topicName = String(r.Topic||"").trim();
+    const sid = subjectByName[subjectName.toLowerCase()];
+    const topics = sid ? (SUBJECTS[sid].topics||{}) : {};
+    let tid = null;
+    Object.entries(topics).forEach(([id,t])=>{ if ((t.name||"").trim().toLowerCase()===topicName.toLowerCase()) tid=id; });
+    const question = String(r.Question||"").trim();
+    const correct = String(r.CorrectOption||"").trim().toUpperCase();
+    if (!sid || !tid || !question || !["A","B","C","D"].includes(correct)){
+      invalid.push(`Row ${idx+2}: ${!sid?'unknown subject "'+subjectName+'"':!tid?'unknown topic "'+topicName+'"':!question?'missing question':'invalid CorrectOption'}`);
+      return;
+    }
+    const key = db.ref().push().key;
+    // Each path here is itself the exact node the question rule governs, so the
+    // session proof goes inside every individual object, not just once at root.
+    writes[`questions/${sid}/${tid}/${key}`] = {
+      question, optionA:String(r.OptionA||""), optionB:String(r.OptionB||""),
+      optionC:String(r.OptionC||""), optionD:String(r.OptionD||""),
+      correct, explanation:String(r.Explanation||""), difficulty:String(r.Difficulty||"Medium"),
+      createdAt: Date.now(), ...mcAdmin.meta()
+    };
+    valid++;
+  });
+
+  const proceed = await mcModal({
+    icon: valid ? "info" : "error", title:"Upload preview", wide:true,
+    html: `<p>${valid} question(s) ready to import.${invalid.length ? " "+invalid.length+" row(s) will be skipped:" : ""}</p>${invalid.length?`<div class="card" style="background:var(--bg-alt);max-height:160px;overflow-y:auto;font-size:12.5px">${invalid.slice(0,30).join("<br>")}</div>`:""}`,
+    actions: valid ? [{label:"Cancel", value:false, style:"ghost"},{label:`Import ${valid} question(s)`, value:true, style:"primary"}] : [{label:"Close", value:false, style:"primary"}]
+  });
+  if (!proceed || !valid) return;
+  await db.ref().update(writes);
+  await mcAlert(`${valid} question(s) imported successfully.`, {icon:"success", title:"Import complete"});
+  document.getElementById("xlsxInput").value = "";
+  renderQuestionsList();
+}
+
+/* ---------------- DEVICES ---------------- */
+function renderDevicesTable(){
+  const body = document.getElementById("devicesBody");
+  const entries = Object.entries(STUDENTS).filter(([id,s])=>s.deviceId);
+  body.innerHTML = entries.length ? entries.map(([id,s])=>`
+    <tr>
+      <td><b>${s.name}</b><div class="muted mono" style="font-size:11.5px">${s.email}</div></td>
+      <td>${s.deviceInfo ? s.deviceInfo.name : "Unknown"}</td>
+      <td class="muted">${s.deviceInfo ? new Date(s.deviceInfo.lastSeen).toLocaleString() : "—"}</td>
+      <td><button class="btn btn-sm btn-ghost" onclick="unlockDevice('${id}')">Unlock</button></td>
+    </tr>`).join("") : `<tr><td colspan="4" class="muted">No devices locked yet.</td></tr>`;
+}
+
+/* ---------------- RESULTS ---------------- */
+function fillResultsFilter(){
+  const sel = document.getElementById("resultsFilter");
+  sel.innerHTML = `<option value="">All students</option>` + Object.entries(STUDENTS).map(([id,s])=>`<option value="${id}">${s.name}</option>`).join("");
+}
+function isCompletedMockResult(r){
+  if(!r || typeof r!=="object") return false;
+  const type=String(r.type||r.assessmentType||r.examType||"").toLowerCase();
+  const official=r.isOfficialMock===true || r.isOfficialMock==="true";
+  const total=Number(r.total), score=Number(r.score), pct=Number(r.scorePct);
+  return (type==="mock" || official) && r.completed!==false && total>0 && Number.isFinite(total) && Number.isFinite(score) && score>=0 && score<=total && Number.isFinite(pct) && pct>=0 && pct<=100 && !!r.finishedAt;
+}
+
+function renderResults(){
+  fillResultsFilter();
+  const filter=document.getElementById("resultsFilter").value;
+  const q=(document.getElementById("resultsSearch").value||"").trim().toLowerCase();
+  const rows=ALL_RESULTS.filter(r=>!filter||r.studentId===filter)
+    .filter(r=>!q||((STUDENTS[r.studentId]||{}).name||"").toLowerCase().includes(q))
+    .sort((a,b)=>(b.finishedAt||0)-(a.finishedAt||0)).slice(0,300);
+  document.getElementById("resultsBody").innerHTML=rows.length?rows.map(r=>`
+    <tr><td>${(STUDENTS[r.studentId]||{}).name||"—"}</td>
+    <td class="muted">${r.finishedAt?new Date(r.finishedAt).toLocaleDateString():"—"}</td>
+    <td><span class="badge">${r.type}</span></td>
+    <td>${r.subjectId ? (((SUBJECTS[r.subjectId]||{}).name||"") + (r.topicId ? (" · " + (((SUBJECTS[r.subjectId]||{}).topics||{})[r.topicId]?.name||"")) : "")) : "All subjects"}</td>
+    <td><b>${r.scorePct}%</b></td></tr>`).join(""):`<tr><td colspan="5" class="muted">No results yet.</td></tr>`;
+  renderResultRequests();
+}
+async function renderResultRequests(){
+  const wrap=document.getElementById("resultRequestsList"); if(!wrap)return;
+  try{
+    const snap=await db.ref("resultRequests").once("value"), v=snap.val()||{};
+    const entries=Object.entries(v).sort((a,b)=>(b[1].requestedAt||0)-(a[1].requestedAt||0));
+    wrap.innerHTML=entries.length?entries.map(([id,r])=>`
+      <div class="flex between" style="gap:10px;padding:10px 0;border-bottom:1px solid var(--border);flex-wrap:wrap">
+        <div><b>${r.studentName||"Student"}</b><div class="muted" style="font-size:12px">${r.studentEmail||""} · ${r.requestedAt?new Date(r.requestedAt).toLocaleString():""}</div></div>
+        <div class="flex gap-8"><span class="badge ${r.status==="pending"?"warn":r.status==="approved"?"ok":"bad"}">${r.status}</span>
+        <button class="btn btn-sm btn-primary" onclick="openOfficialResult('${r.studentId}')">View / Print</button>
+        ${r.status==="pending"?`<button class="btn btn-sm btn-ghost" onclick="approveResultRequest('${id}')">Mark issued</button>`:""}</div>
+      </div>`).join(""):`No original result requests yet.`;
+  }catch(e){wrap.textContent="Could not load result requests.";}
+}
+async function approveResultRequest(id){
+  await mcAdmin.write("resultRequests/"+id,{status:"approved",reviewedAt:Date.now()});
+  renderResultRequests();
+}
+async function openOfficialResult(studentId){
+  const s=STUDENTS[studentId]; if(!s)return;
+  const attempts=ALL_RESULTS.filter(r=>r.studentId===studentId&&isCompletedMockResult(r));
+  if(!attempts.length){
+    const possible=ALL_RESULTS.filter(r=>r.studentId===studentId);
+    const hint=possible.length ? ` The student has ${possible.length} saved test attempt${possible.length===1?"":"s"}, but none is recorded as a completed mock.` : " No result attempt is currently saved for this student.";
+    await mcAlert("This student has not completed a valid mock examination."+hint+" A completed 20-question mock is sufficient to make the student eligible.",{icon:"warn",title:"Original result not ready"});
+    return;
+  }
+  const bySubject={};
+  attempts.forEach(r=>{
+    const sid=r.subjectId||"unknown", pct=Math.max(0,Math.min(100,Number(r.scorePct)||0));
+    const b=bySubject[sid] ||= {best:0,bestScore:0,bestTotal:0,attempts:0,sum:0,last:0};
+    b.attempts++; b.sum+=pct; b.last=Math.max(b.last,r.finishedAt||0);
+    if(pct>b.best){ b.best=pct; b.bestScore=Number(r.score)||0; b.bestTotal=Number(r.total)||0; }
+  });
+  const rows=Object.entries(bySubject).sort((a,b)=>b[1].best-a[1].best);
+  const overall=rows.length?Math.round(rows.reduce((a,[,b])=>a+b.best,0)/rows.length):0;
+  const activeDays=new Set(ALL_RESULTS.filter(r=>r.studentId===studentId&&r.finishedAt).map(r=>new Date(r.finishedAt).toISOString().slice(0,10)));
+  const activeWeeks=new Set(ALL_RESULTS.filter(r=>r.studentId===studentId&&r.finishedAt).map(r=>{const d=new Date(r.finishedAt);const one=new Date(d.getFullYear(),0,1);return d.getFullYear()+"-W"+Math.ceil((((d-one)/86400000)+one.getDay()+1)/7);}));
+  const activeMonths=new Set(ALL_RESULTS.filter(r=>r.studentId===studentId&&r.finishedAt).map(r=>{const d=new Date(r.finishedAt);return d.getFullYear()+"-"+(d.getMonth()+1);}));
+  const frequency=activeDays.size>=20?"Daily":activeWeeks.size>=4?"Weekly":activeMonths.size>=2?"Monthly":activeDays.size>=2?"Occasional":"Rare";
+  const commentBands=[
+    [90,"Outstanding performance. The student demonstrates excellent mastery and strong examination readiness. Continue maintaining this standard."],
+    [80,"Excellent performance. The student shows strong understanding and very good examination readiness. Continue focused revision for consistency."],
+    [70,"Very good performance. The student has a solid foundation and is progressing well. Regular revision should strengthen remaining weaker areas."],
+    [60,"Good developing performance. The student has an encouraging foundation but should practise consistently and target weaker topics."],
+    [50,"Fair performance. The student is making progress, but additional revision, practice and tutor guidance are recommended."],
+    [40,"Developing performance. More structured revision is required, especially in weaker topics, before the next mock."],
+    [30,"Below the expected level at present. The student should increase practice frequency and review explanations carefully."],
+    [20,"Significant improvement is needed. A topic-by-topic revision plan and regular practice are recommended."],
+    [10,"Very limited mastery is currently demonstrated. The student should return to the assigned notes, diagnostics and guided practice."],
+    [0,"Substantial preparation is required. The student should follow the MathCloud learning materials closely and seek tutor support where necessary."]
+  ];
+  const comment=(commentBands.find(x=>overall>=x[0])||commentBands[commentBands.length-1])[1];
+  const html=`<div id="officialResult" class="result-print" style="padding:28px;background:#fff;color:#111;border-radius:12px">
+    <div style="display:flex;align-items:center;gap:14px;border-bottom:2px solid #d99b25;padding-bottom:14px">
+      <img src="assets/logo.png" style="width:62px;height:62px;border-radius:12px;object-fit:cover"><div><h1 style="margin:0;color:#222">MathCloud Tutorial</h1><div>JAMB Performance Result</div></div>
+    </div>
+    <h2>Student Information</h2><p><b>Name:</b> ${s.name||"—"} &nbsp; <b>Email:</b> ${s.email||"—"}</p>
+    <p><b>Mock attempts:</b> ${attempts.length} &nbsp; <b>Platform frequency:</b> ${frequency}</p>
+    <h2>Subject Performance</h2><table style="width:100%;border-collapse:collapse"><thead><tr><th style="text-align:left;border-bottom:1px solid #aaa;padding:8px">Subject</th><th style="padding:8px">Attempts</th><th style="padding:8px">Best score</th><th style="padding:8px">Best %</th><th style="padding:8px">Average</th></tr></thead><tbody>
+    ${rows.map(([sid,b])=>`<tr><td style="border-bottom:1px solid #ddd;padding:8px">${(SUBJECTS[sid]||{}).name||sid}</td><td style="text-align:center;border-bottom:1px solid #ddd">${b.attempts}</td><td style="text-align:center;border-bottom:1px solid #ddd"><b>${b.bestScore}/${b.bestTotal}</b></td><td style="text-align:center;border-bottom:1px solid #ddd"><b>${b.best}%</b></td><td style="text-align:center;border-bottom:1px solid #ddd">${Math.round(b.sum/b.attempts)}%</td></tr>`).join("")}</tbody></table>
+    <div style="text-align:center;margin:22px 0"><div style="font-size:46px;font-weight:800;color:#b36b00">${overall}%</div><b>BEST SUBJECT AVERAGE</b></div>
+    <h2>MathCloud Tutor / Administrator Comment</h2><p>${comment}</p>
+    <p style="margin-top:30px;font-size:11px;color:#666">Generated by MathCloud Tutorial · This is an official result card issued by the administrator.</p>
+  </div>`;
+  const v=await mcModal({title:"Official MathCloud Result",wide:true,html,actions:[{label:"Close",value:false,style:"ghost"},{label:"Print result",value:true,style:"primary"}]});
+  if(v){const el=document.getElementById("officialResult");const w=window.open("","_blank");w.document.write(`<html><head><title>MathCloud Result — ${s.name}</title><style>body{font-family:Arial;margin:30px}table{font-size:14px}</style></head><body>${el.outerHTML}</body></html>`);w.document.close();w.focus();w.print();}
+}
+
+</script>
+</body>
+</html>

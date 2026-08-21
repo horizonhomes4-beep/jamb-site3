@@ -1,0 +1,74 @@
+{
+  "m1": {
+    "label": "1 Month",
+    "months": 1,
+    "price": 5000,
+    "discount": 0
+  },
+  "m2": {
+    "label": "2 Months",
+    "months": 2,
+    "price": 9500,
+    "discount": 5
+  },
+  "m3": {
+    "label": "3 Months",
+    "months": 3,
+    "price": 13500,
+    "discount": 10
+  },
+  "m4": {
+    "label": "4 Months",
+    "months": 4,
+    "price": 18000,
+    "discount": 10
+  },
+  "m5": {
+    "label": "5 Months",
+    "months": 5,
+    "price": 21250,
+    "discount": 15
+  },
+  "m6": {
+    "label": "6 Months",
+    "months": 6,
+    "price": 24000,
+    "discount": 20
+  },
+  "m7": {
+    "label": "7 Months",
+    "months": 7,
+    "price": 28000,
+    "discount": 20
+  },
+  "m8": {
+    "label": "8 Months",
+    "months": 8,
+    "price": 30000,
+    "discount": 25
+  },
+  "m9": {
+    "label": "9 Months",
+    "months": 9,
+    "price": 31500,
+    "discount": 30
+  },
+  "m10": {
+    "label": "10 Months",
+    "months": 10,
+    "price": 35000,
+    "discount": 30
+  },
+  "m11": {
+    "label": "11 Months",
+    "months": 11,
+    "price": 35750,
+    "discount": 35
+  },
+  "m12": {
+    "label": "12 Months",
+    "months": 12,
+    "price": 36000,
+    "discount": 40
+  }
+}

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="MathCloud JAMB preparation platform — UTME subjects, course combinations, lessons, practice, mock exams and supervised subscriptions.">
+<title>MathCloud Tutorial | JAMB / UTME Learning Platform</title>
+<link rel="icon" href="assets/logo.png"><link rel="stylesheet" href="assets/style.css">
+<style>
+body{background:#07111f;color:#edf5ff}.wrap{width:min(1160px,calc(100% - 28px));margin:auto}.hero{padding:70px 0 55px;background:radial-gradient(circle at 80% 20%,#153d5c 0,transparent 35%),linear-gradient(135deg,#07111f,#0b1c32)}.nav{padding:16px 0;border-bottom:1px solid #ffffff18;position:sticky;top:0;background:#07111fee;backdrop-filter:blur(12px);z-index:10}.navin{display:flex;justify-content:space-between;align-items:center;gap:20px}.brand{display:flex;align-items:center;gap:10px;font-weight:900}.brand img{width:45px;height:45px;border-radius:12px;background:white}.brand small{display:block;color:#ffd979;font-size:10px;letter-spacing:1px}.grid{display:grid;grid-template-columns:1.1fr .9fr;gap:35px;align-items:start}.eyebrow{color:#ffd979;font-weight:800;font-size:12px;letter-spacing:1px}.hero h1{font-size:clamp(38px,6vw,70px);line-height:1;margin:15px 0}.hero h1 span{color:#ffd979}.hero p{color:#a9bdd2;line-height:1.8;font-size:16px}.card{background:#0d2035;border:1px solid #ffffff14;border-radius:20px;padding:24px;box-shadow:0 18px 50px #0004}.tabs{display:flex;gap:5px;background:#071321;padding:5px;border-radius:12px;margin-bottom:18px}.tabs button{flex:1;border:0;background:transparent;color:#9eb0c3;padding:11px;border-radius:9px;font-weight:800;cursor:pointer}.tabs button.active{background:#f5b942;color:#171006}.field{margin:10px 0}.field label{display:block;font-size:12px;font-weight:800;color:#b8c9da;margin-bottom:6px}.field input,.field select{width:100%;padding:12px;border-radius:10px;background:#071321;color:white;border:1px solid #ffffff18}.btn{display:inline-flex;justify-content:center;align-items:center;border:0;border-radius:11px;padding:13px 16px;font-weight:800;cursor:pointer}.primary{background:#f5b942;color:#171006}.ghost{background:#ffffff08;color:#fff;border:1px solid #ffffff16}.full{width:100%}.muted{color:#8fa4bb;font-size:12px;line-height:1.6}.coursebox{display:none;margin-top:12px;padding:14px;border-radius:12px;background:#071321;border:1px solid #ffffff12}.coursebox.show{display:block}.subject-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}.check{display:flex;gap:8px;align-items:flex-start;padding:9px;border:1px solid #ffffff12;border-radius:9px;background:#0a1a2b;font-size:12px}.check input{margin-top:3px}.section{padding:65px 0}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.feature{padding:20px;border-radius:16px;background:#0c1b2d;border:1px solid #ffffff10}.pricegrid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.price strong{font-size:30px}.notice{padding:13px;border-radius:11px;background:#172d45;color:#b8cadc;font-size:12px;line-height:1.7;margin-top:12px}.official{color:#ffd979}.hide{display:none!important}@media(max-width:850px){.grid,.cards,.pricegrid{grid-template-columns:1fr}.hero{padding-top:45px}.subject-grid{grid-template-columns:1fr}}
+.google-mark{width:20px;height:20px;display:inline-grid;place-items:center;border-radius:50%;background:#fff;color:#4285f4;font-weight:900;font-family:Arial,sans-serif;font-size:14px;margin-right:8px;box-shadow:0 0 0 1px #ffffff30}.google-btn{display:flex!important;gap:0;align-items:center;justify-content:center}
+</style>
+</head><body>
+<div class="nav"><div class="wrap navin"><div class="brand"><img src="assets/logo.png"><div>MathCloud Tutorial<small>JAMB / UTME LEARNING</small></div></div><div><a class="btn ghost" href="#pricing">Subscription</a></div></div></div>
+<header class="hero"><div class="wrap grid"><div><div class="eyebrow">🇳🇬 JAMB / UTME PREPARATION • 2026</div><h1>Choose the right course. <span>Study the right subjects.</span></h1><p>MathCloud is being structured around JAMB preparation: course-to-subject guidance, JAMB subjects, lessons, practice, CBT-style mocks, results and supervised subscription access.</p><div class="notice">Your course and UTME subject selection is locked after registration. If you need to change it later, contact MathCloud Tutorial.</div></div>
+<div class="card" id="portal"><div class="tabs"><button id="loginTab" class="active" onclick="switchMode('login')">Student Login</button><button id="registerTab" onclick="switchMode('register')">Register</button></div>
+<form id="loginForm" onsubmit="return false"><div class="field"><label>Email</label><input id="loginEmail" type="email" required></div><div class="field"><label>Password</label><input id="loginPassword" type="password" required></div><button class="btn primary full" id="loginBtn" onclick="loginStudent()">Log in</button><button type="button" class="btn ghost full google-btn" id="googleLoginBtn" onclick="googleStudentLogin()" style="margin-top:9px"><span class="google-mark" aria-hidden="true">G</span><span>Continue with Google</span></button><button type="button" class="btn ghost full" id="forgotBtn" onclick="forgotPassword()" style="margin-top:9px">Forgot password?</button><p class="muted">One account can be active on one device at a time. A device change requires MathCloud support.</p></form>
+<form id="registerForm" class="hide" onsubmit="return false"><div class="field"><label>Full name</label><input id="regName" required></div><div class="field"><label>Email</label><input id="regEmail" type="email" required></div><div class="field"><label>Password</label><input id="regPassword" type="password" minlength="8" required></div><div class="field"><label>Choose intended course</label><select id="regCourse" onchange="renderCourseCombination()" required><option value="">Loading courses…</option></select></div><div id="courseBox" class="coursebox"></div><div class="field"><label>Confirm selection</label><div class="check"><input type="checkbox" id="regConfirm"> <span>I understand that my course and subject combination will be locked after registration. Changes require contacting MathCloud Tutorial.</span></div></div><button class="btn primary full" id="registerBtn" onclick="registerStudent()">Create JAMB student account</button><button type="button" class="btn ghost full google-btn" id="googleRegisterBtn" onclick="googleStudentRegister()" style="margin-top:9px"><span class="google-mark" aria-hidden="true">G</span><span>Register with Google</span></button><p class="muted">Registration creates your account. Learning materials remain locked until your subscription payment is reviewed and approved by an administrator.</p></form></div></div></header>
+<section class="section"><div class="wrap"><h2>What the JAMB platform includes</h2><div class="cards"><div class="feature"><h3>🎯 Course → subjects</h3><p class="muted">Select Medicine, Law, Engineering, Computer Science and other courses to see the recommended UTME combination before you register.</p></div><div class="feature"><h3>📚 JAMB subject library</h3><p class="muted">The seed includes the broad UTME subject catalogue. Lessons and question banks can then be attached to each subject.</p></div><div class="feature"><h3>🔐 Approved access</h3><p class="muted">Students can register and submit payment, but protected learning materials unlock only after admin approval.</p></div></div></div></section>
+<section class="section" id="pricing"><div class="wrap"><h2>JAMB subscription</h2><p class="muted">Suggested launch pricing. The administrator can change plans and prices from the dashboard.</p><div class="pricegrid" id="landingPlans"></div><div class="notice">MathCloud subscription fees are separate from official JAMB registration fees. Payment is submitted for review; do not assume access is active until the administrator approves the subscription.</div></div></section>
+<footer class="section"><div class="wrap"><div class="muted">© <span id="year"></span> MathCloud Tutorial · JAMB / UTME preparation.</div><div class="muted">Official JAMB references: <a class="official" href="https://eligibility.jamb.gov.ng/" target="_blank">IBASS Eligibility Checker</a> · <a class="official" href="https://www.jamb.gov.ng/" target="_blank">JAMB</a></div></div></footer>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script><script src="assets/firebase-config.js"></script><script src="assets/app.js"></script>
+<script>
+window.mcAuthReady = async function(){
+  if(window.firebase && firebase.auth){
+    const a=firebase.auth();
+    if(a.authStateReady) await a.authStateReady();
+    return a.currentUser;
+  }
+  return null;
+};
+</script>
+<script>
+let CATALOG={courses:[],subjects:[]};
+const $=id=>document.getElementById(id);
+function switchMode(mode){$('loginForm').classList.toggle('hide',mode!=='login');$('registerForm').classList.toggle('hide',mode!=='register');$('loginTab').classList.toggle('active',mode==='login');$('registerTab').classList.toggle('active',mode==='register');}
+async function loadCatalog(){try{const s=await db.ref('jambCatalog').once('value');CATALOG=s.val()||{courses:[],subjects:[]};const sel=$('regCourse');sel.innerHTML='<option value="">Select a course</option>'+CATALOG.courses.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');}catch(e){$('regCourse').innerHTML='<option value="">Catalog unavailable</option>';}}
+function names(ids){return ids.map(id=>CATALOG.subjects.find(s=>s.id===id)?.name||id);}
+function renderCourseCombination(){
+  const c=CATALOG.courses.find(x=>x.id===$('regCourse').value);
+  const box=$('courseBox');
+  if(!c){box.classList.remove('show');box.innerHTML='';return;}
+  let html=`<b>${c.name}</b><div class="muted" style="margin-top:5px">${c.note||''}</div><div style="margin-top:10px"><b>UTME subject combination — automatically selected</b></div>`;
+  for(const item of c.required){
+    if(c.alternatives&&c.alternatives[item]){
+      html+=`<div style="margin-top:9px"><div class="muted"><b>Choose one required subject:</b></div>${c.alternatives[item].map((sid,i)=>`<label class="check" style="margin-top:6px"><input type="radio" required name="combo-${item}" value="${sid}" ${i===0?'checked':''}> <span>${names([sid])[0]}</span></label>`).join('')}</div>`;
+    } else {
+      html+=`<label class="check" style="margin-top:7px"><input type="checkbox" checked disabled><span>${names([item])[0]} <b>(required)</b></span></label>`;
+    }
+  }
+  html+=`<div class="muted" style="margin-top:10px">The displayed combination is saved with your account and locked after registration. Any later change must be requested from MathCloud Tutorial. Verify the exact institution/programme in JAMB IBASS before final JAMB registration.</div>`;
+  box.innerHTML=html;box.classList.add('show');
+}
+function getSelectedCombination(course){
+  const selected=[];
+  for(const item of course.required){
+    if(course.alternatives&&course.alternatives[item]){
+      const picked=document.querySelector(`input[name="combo-${item}"]:checked`);
+      if(!picked)return null; selected.push(picked.value);
+    } else selected.push(item);
+  }
+  return selected;
+}
+
+async function registerStudent(){const name=$('regName').value.trim(),email=$('regEmail').value.trim().toLowerCase(),password=$('regPassword').value,cid=$('regCourse').value;if(!name||!email||!password||!cid||!$('regConfirm').checked){alert('Complete all registration fields and confirm the locked-selection rule.');return;}const course=CATALOG.courses.find(c=>c.id===cid);const selected=[];for(const item of course.required){if(course.alternatives&&course.alternatives[item]){const picked=document.querySelector(`input[name=\"combo-${item}\"]:checked`);if(!picked){alert('Choose one subject for every alternative group.');return;}selected.push(picked.value);}else selected.push(item);}const btn=$('registerBtn');btn.disabled=true;btn.textContent='Creating account…';try{const cred=await auth.createUserWithEmailAndPassword(email,password);const uid=cred.user.uid;const studentRef=db.ref('students').push();const studentId=studentRef.key;await studentRef.set({authUid:uid,name,email,courseId:course.id,courseName:course.name,courseLocked:true,subjectSelectionLocked:true,selectedSubjects:selected,assignedSubjects:{},status:'pending',subscription:{status:'none'},deviceId:null,createdAt:Date.now()});await db.ref('studentByAuthUid/'+uid).set(studentId);await auth.signOut();await alert('Registration submitted successfully. Your account is pending administrator activation. Your course and UTME subject combination is locked; changes require MathCloud support. You can log in after an administrator activates your account.');switchMode('login');$('loginEmail').value=email;}catch(e){alert(firebaseAuthHelp(e));}finally{btn.disabled=false;btn.textContent='Create JAMB student account';}}
+function firebaseAuthHelp(e){const c=e&&e.code||'';if(c==='auth/configuration-not-found'||c==='auth/operation-not-allowed')return 'Firebase Authentication is not fully enabled. In Firebase Console, open Authentication → Sign-in method and enable Email/Password, then reload MathCloud.';if(c==='auth/invalid-api-key')return 'The MathCloud Firebase API key is invalid. Check assets/firebase-config.js.';if(c==='auth/unauthorized-domain')return 'This website domain is not authorized for Google sign-in. In Firebase Console → Authentication → Settings → Authorized domains, add the domain you are using.';if(c==='auth/popup-blocked')return 'Google sign-in popup was blocked. Allow pop-ups for MathCloud and try again.';return e&&e.message||'Authentication failed.';}
+async function forgotPassword(){const email=$('loginEmail').value.trim().toLowerCase();if(!email){alert('Enter your registered email address first.');$('loginEmail').focus();return;}const b=$('forgotBtn');b.disabled=true;b.textContent='Sending reset email…';try{await auth.sendPasswordResetEmail(email);alert('Password reset email sent. Check your inbox and spam/junk folder, then follow the Firebase reset link to create a new password.');}catch(e){if(e.code==='auth/user-not-found')alert('No MathCloud account was found with this email address.');else if(e.code==='auth/invalid-email')alert('Please enter a valid email address.');else alert(firebaseAuthHelp(e));}finally{b.disabled=false;b.textContent='Forgot password?';}}
+async function googleStudentRegister(){
+  const name=$('regName').value.trim(),cid=$('regCourse').value;
+  if(!cid||!$('regConfirm').checked){alert('Choose your intended course, review the displayed UTME subject combination, and confirm the locked-selection rule before registering with Google.');return;}
+  const course=CATALOG.courses.find(c=>c.id===cid); if(!course)return;
+  const selected=[];
+  for(const item of course.required){
+    if(course.alternatives&&course.alternatives[item]){
+      const picked=document.querySelector(`input[name="combo-${item}"]:checked`); if(!picked){alert('Choose one subject for every alternative group.');return;} selected.push(picked.value);
+    }else selected.push(item);
+  }
+  const b=$('googleRegisterBtn'); b.disabled=true; b.textContent='Opening Google…';
+  try{
+    const provider=new firebase.auth.GoogleAuthProvider();
+    provider.setCustomParameters({prompt:'select_account'});
+    const cred=await auth.signInWithPopup(provider), user=cred.user, uid=user.uid;
+    const existing=await db.ref('studentByAuthUid/'+uid).once('value');
+    if(existing.exists()){await auth.signOut();alert('A MathCloud student profile already exists for this Google account. Use Student Login → Continue with Google.');switchMode('login');return;}
+    const email=(user.email||'').trim().toLowerCase();
+    const studentRef=db.ref('students').push(), studentId=studentRef.key;
+    await studentRef.set({authUid:uid,name:name||user.displayName||'JAMB Student',email,provider:'google.com',photoURL:user.photoURL||'',courseId:course.id,courseName:course.name,courseLocked:true,subjectSelectionLocked:true,selectedSubjects:selected,assignedSubjects:{},status:'pending',subscription:{status:'none'},deviceId:null,createdAt:Date.now()});
+    await db.ref('studentByAuthUid/'+uid).set(studentId);
+    await auth.signOut();
+    alert('Google registration successful. Your account is pending administrator activation. Your course and subject combination is locked; log in with Google after MathCloud activates your account.');
+    switchMode('login'); $('loginEmail').value=email;
+  }catch(e){
+    await auth.signOut().catch(()=>{});
+    if(e.code==='auth/popup-blocked')alert('Google sign-in was blocked by the browser. Allow pop-ups for MathCloud and try again.');
+    else if(e.code==='auth/popup-closed-by-user')return;
+    else if(e.code==='auth/account-exists-with-different-credential')alert('This email already has a MathCloud account using another sign-in method. Log in with your existing method first.');
+    else alert(firebaseAuthHelp(e));
+  }finally{b.disabled=false;b.innerHTML='<span class="google-mark" aria-hidden="true">G</span><span>Register with Google</span>';}
+}
+async function googleStudentLogin(){
+  const b=$('googleLoginBtn'); b.disabled=true; b.textContent='Opening Google…';
+  try{
+    const provider=new firebase.auth.GoogleAuthProvider(); provider.setCustomParameters({prompt:'select_account'});
+    const cred=await auth.signInWithPopup(provider), uid=cred.user.uid;
+    const map=await db.ref('studentByAuthUid/'+uid).once('value');
+    if(!map.exists()){await auth.signOut();alert('This Google account is not linked to a MathCloud student profile. Use Register → Register with Google first, then choose your JAMB course and subject combination.');switchMode('register');return;}
+    const id=map.val(), snap=await db.ref('students/'+id).once('value'), s=snap.val();
+    if(!s||s.status==='suspended')throw new Error('Your student account is unavailable or suspended.'); if(s.status==='pending'){await auth.signOut();await mcAlert('Your MathCloud student account has been created but is waiting for administrator activation. You will be able to access the Student Dashboard after activation.',{icon:'warn',title:'Account pending activation'});return;}
+    const device=mcDeviceId();
+    if(s.deviceId&&s.deviceId!==device){await auth.signOut();await mcContactModal();return;}
+    if(!s.deviceId){await db.ref('students/'+id+'/deviceId').set(device);await db.ref('students/'+id+'/deviceInfo').set(mcDeviceInfo());}
+    else await db.ref('students/'+id+'/deviceInfo').set(mcDeviceInfo());
+    sessionStorage.setItem('mc_jamb_student_id',id); window.location.href='student.html';
+  }catch(e){await auth.signOut().catch(()=>{});if(e.code==='auth/popup-blocked')alert('Google sign-in was blocked by the browser. Allow pop-ups for MathCloud and try again.');else if(e.code==='auth/popup-closed-by-user')return;else if(e.code==='auth/account-exists-with-different-credential')alert('This email already has a MathCloud account using another sign-in method. Log in with your existing method.');else alert(firebaseAuthHelp(e));}
+  finally{b.disabled=false;b.innerHTML='<span class="google-mark" aria-hidden="true">G</span><span>Continue with Google</span>';}
+}
+async function loginStudent(){const email=$('loginEmail').value.trim().toLowerCase(),password=$('loginPassword').value;if(!email||!password)return;const btn=$('loginBtn');btn.disabled=true;btn.textContent='Signing in…';try{const cred=await auth.signInWithEmailAndPassword(email,password);const uid=cred.user.uid;const map=await db.ref('studentByAuthUid/'+uid).once('value');if(!map.exists())throw new Error('This account is not linked to a MathCloud student profile. Contact MathCloud.');const id=map.val();const snap=await db.ref('students/'+id).once('value');const s=snap.val();if(!s||s.status==='suspended')throw new Error('Your student account is unavailable or suspended.'); if(s.status==='pending'){await auth.signOut();await mcAlert('Your MathCloud student account has been created but is waiting for administrator activation. You will be able to access the Student Dashboard after activation.',{icon:'warn',title:'Account pending activation'});return;}const device=mcDeviceId();if(s.deviceId&&s.deviceId!==device){await auth.signOut();await mcContactModal();return;}if(!s.deviceId){await db.ref('students/'+id+'/deviceId').set(device);await db.ref('students/'+id+'/deviceInfo').set(mcDeviceInfo());}else{await db.ref('students/'+id+'/deviceInfo').set(mcDeviceInfo());}sessionStorage.setItem('mc_jamb_student_id',id);window.location.href='student.html';}catch(e){await auth.signOut().catch(()=>{});alert(firebaseAuthHelp(e));}finally{btn.disabled=false;btn.textContent='Log in';}}
+function renderLandingPlans(){const wrap=document.getElementById('landingPlans');if(!wrap)return;const plans=mcDefaultPlans();wrap.innerHTML=Object.values(plans).map(p=>`<div class="feature price"><div style="display:flex;justify-content:space-between;gap:8px"><h3>${p.label}</h3>${p.discount?`<span class="save-badge">Save ${p.discount}%</span>`:''}</div><strong>₦${p.price.toLocaleString()}</strong><p class="muted">${p.months} month${p.months>1?'s':''} · ₦${Math.round(p.price/p.months).toLocaleString()}/month</p></div>`).join('');}
+$('year').textContent=new Date().getFullYear();renderLandingPlans();loadCatalog();
+</script></body></html>

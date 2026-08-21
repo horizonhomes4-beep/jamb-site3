@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>You're offline — MathCloud Tutorial</title>
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  body{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;
+    background:radial-gradient(900px 500px at 20% -10%, rgba(245,166,35,.10), transparent), var(--bg);}
+  .box{max-width:440px;text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:34px 28px;box-shadow:var(--shadow);}
+  .ic{width:64px;height:64px;border-radius:16px;background:rgba(245,166,35,.12);color:var(--amber);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 16px;}
+</style>
+</head>
+<body>
+  <div class="box">
+    <div class="ic">⌁</div>
+    <h1>You're offline</h1>
+    <p>MathCloud Tutorial needs an internet connection to load questions, save your progress and sync with your tutor. Reconnect to Wi-Fi or mobile data and try again.</p>
+    <div id="status" class="badge bad" style="margin:10px 0 18px">Disconnected</div>
+    <button class="btn btn-primary btn-block" onclick="location.href='index.html'">Try again</button>
+    <p style="margin-top:16px;font-size:12.5px">Still stuck? WhatsApp <b>MathCloud Tutorial</b> at <a style="color:var(--amber)" href="https://wa.me/2348102341648">+234 810 234 1648</a></p>
+  </div>
+  <script>
+    function refresh(){
+      const el = document.getElementById('status');
+      if (navigator.onLine){
+        el.textContent = "Back online"; el.className = "badge ok";
+        setTimeout(()=>location.href='index.html', 700);
+      }
+    }
+    window.addEventListener('online', refresh);
+    refresh();
+  </script>
+</body>
+</html>

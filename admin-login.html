@@ -1,0 +1,23 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Admin sign-in — MathCloud Tutorial</title><link rel="icon" href="assets/logo.png"><link rel="stylesheet" href="assets/style.css"></head><body><div class="auth-wrap"><div class="auth-card"><div class="auth-logo"><div class="brand-badge"><img src="assets/logo.png" style="width:100%;height:100%;object-fit:cover;border-radius:14px"></div><h1>Admin sign-in</h1><div class="muted">MathCloud JAMB console</div></div><label>Email</label><input id="aEmail" type="email" value="marshall12340@gmail.com"><label>Password</label><input id="aPassword" type="password"><button class="btn btn-primary btn-block" id="btn" style="margin-top:18px" onclick="login()">Log in</button><button class="btn btn-block google-btn" id="googleAdminBtn" style="margin-top:9px" onclick="googleAdminLogin()"><span class="google-mark" aria-hidden="true">G</span><span>Continue with Google</span></button><button class="btn btn-block" style="margin-top:9px" onclick="forgotAdminPassword()">Forgot password?</button><p class="muted">Admin authentication uses Firebase Authentication. The admin account must first be created through setup.html.</p></div></div><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script><script src="assets/firebase-config.js"></script><script src="assets/app.js"></script><script>
+window.mcAuthReady = async function(){
+  if(window.firebase && firebase.auth){
+    const a=firebase.auth();
+    if(a.authStateReady) await a.authStateReady();
+    return a.currentUser;
+  }
+  return null;
+};
+</script>
+<script>async function forgotAdminPassword(){const email=document.getElementById('aEmail').value.trim().toLowerCase();if(!email){await mcAlert('Enter the administrator email address first.',{icon:'warning'});return;}try{await auth.sendPasswordResetEmail(email);await mcAlert('Password reset email sent. Check the inbox and spam/junk folder.',{icon:'success'});}catch(e){await mcAlert(e.code==='auth/user-not-found'?'No Firebase account was found for this email.':(e.message||'Could not send password reset email.'),{icon:'error'});}}
+async function googleAdminLogin(){
+ const b=document.getElementById('googleAdminBtn');b.disabled=true;b.innerHTML='Opening Google…';
+ try{
+  const provider=new firebase.auth.GoogleAuthProvider();provider.setCustomParameters({prompt:'select_account'});
+  const cred=await auth.signInWithPopup(provider),uid=cred.user.uid;
+  const allowed=await db.ref('settings/adminUsers/'+uid).once('value');
+  if(allowed.val()!==true){await auth.signOut();await mcAlert('This Google account is not authorised as a MathCloud administrator. Authorise its Firebase UID in settings/adminUsers before using Google admin login.',{icon:'error'});return;}
+  await mcAdmin.loginGoogle(cred.user.email,uid);location.replace('admin.html');
+ }catch(e){await auth.signOut().catch(()=>{});if(e.code==='auth/popup-blocked')await mcAlert('Google sign-in popup was blocked. Allow pop-ups for MathCloud and try again.',{icon:'warning'});else if(e.code!=='auth/popup-closed-by-user')await mcAlert(e.message||'Google admin login failed.',{icon:'error'});}
+ finally{b.disabled=false;b.innerHTML='<span class="google-mark" aria-hidden="true">G</span><span>Continue with Google</span>';}
+}
+async function login(){const b=document.getElementById('btn');b.disabled=true;b.textContent='Signing in…';try{const email=document.getElementById('aEmail').value.trim().toLowerCase(),password=document.getElementById('aPassword').value;const cred=await auth.signInWithEmailAndPassword(email,password);await mcAdmin.loginFirebase(email,cred.user.uid);location.replace('admin.html');}catch(e){await auth.signOut().catch(()=>{});const msg=e.code==='auth/user-not-found'?'No administrator Firebase account was found for this email.':e.code==='auth/wrong-password'?'Incorrect administrator password.':e.message==='FIREBASE_ADMIN_NOT_AUTHORIZED'?'This Firebase account is not authorised as a MathCloud administrator.':e.message==='ADMIN_PROFILE_NOT_FOUND'?'The Firebase admin account is not linked to the MathCloud admin profile.':'Admin login failed: '+(e.message||'Unknown error');await mcAlert(msg,{icon:'error'});}finally{b.disabled=false;b.textContent='Log in';}}</script></body></html>

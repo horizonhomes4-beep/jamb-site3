@@ -1,10 +1,116 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MathCloud JAMB Seeder</title><style>body{font-family:Arial;background:#07111f;color:#eef;padding:30px}main{max-width:900px;margin:auto;background:#0d2035;padding:25px;border-radius:18px}button{padding:13px 18px;border:0;border-radius:10px;background:#f5b942;font-weight:800;cursor:pointer}.ok{color:#6ee7b7}.muted{color:#9fb0c7;line-height:1.7}pre{background:#071321;padding:15px;border-radius:10px;white-space:pre-wrap}</style></head><body><main><h1>MathCloud JAMB / UTME Seeder</h1><p class="muted">Run this page while logged into the MathCloud Admin Console. It seeds the public JAMB subject/course catalogue, JAMB subjects in the learning database, and launch subscription plans.</p><button onclick="seed()">Seed / update JAMB platform</button><div id="status" class="muted" style="margin-top:15px"></div></main>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script><script src="assets/firebase-config.js"></script><script>
-window.addEventListener('error', function(e){
-  const el=document.getElementById('status');
-  if(el) el.textContent='Seeder page error: '+(e.message||'Unknown JavaScript error');
-});
-</script>
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MathCloud • JAMB Content Seeder</title>
+<style>
+:root{--bg:#07111f;--panel:#0d2035;--panel2:#102943;--text:#eef6ff;--muted:#a8bdd2;--gold:#f5b942;--green:#55e6a5;--red:#ff7181;--line:#1f3d5a}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#123152 0,#07111f 48%);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif}
+.wrap{max-width:1100px;margin:0 auto;padding:28px}.hero,.card{background:rgba(13,32,53,.94);border:1px solid var(--line);border-radius:20px;box-shadow:0 18px 60px rgba(0,0,0,.24)}
+.hero{padding:28px;margin-bottom:18px}.brand{display:flex;gap:14px;align-items:center}.logo{width:48px;height:48px;border-radius:14px;background:#fff;object-fit:contain;padding:5px}.brand h1{margin:0;font-size:25px}.brand p{margin:5px 0 0;color:var(--muted)}
+.card{padding:22px;margin-top:18px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.stat{background:var(--panel2);padding:17px;border-radius:15px}.stat b{display:block;font-size:25px}.stat span{color:var(--muted);font-size:13px}
+button{border:0;border-radius:12px;padding:13px 18px;font-weight:800;cursor:pointer}.primary{background:var(--gold);color:#07111f}.secondary{background:#173653;color:#fff;border:1px solid #2c5477}.danger{background:#4a1f2a;color:#fff;border:1px solid #8c394b}
+.bar{height:12px;background:#173653;border-radius:99px;overflow:hidden}.bar i{display:block;height:100%;width:0;background:var(--gold);transition:width .2s}.status{padding:14px;border-radius:12px;background:#081a2c;color:var(--muted);white-space:pre-wrap;line-height:1.55}
+.subject{padding:14px;border:1px solid var(--line);border-radius:14px;background:#0b1d30}.subject strong{display:block}.subject small{color:var(--muted)}
+a{color:#8bd3ff}.warning{border-left:4px solid var(--gold);padding:12px 15px;background:#182a38;color:#dcecff;border-radius:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<section class="hero">
+  <div class="brand">
+    <img class="logo" src="assets/logo.png" onerror="this.style.display='none'" alt="MathCloud">
+    <div><h1>MathCloud JAMB / UTME Content Seeder</h1><p>Official-syllabus-aligned subjects • rich HTML notes • MathJax formulae • 12 original CBT practice questions per topic</p></div>
+  </div>
+</section>
+
+<section class="card">
+  <div class="grid" id="stats"></div>
+  <div class="warning" style="margin-top:14px">
+    <strong>Source policy:</strong> The subject catalogue and syllabus scope are aligned to JAMB/IBASS materials. The teaching notes and questions in this seed are original MathCloud learning content, not copied JAMB past questions. Institution-specific UTME combinations must still be verified in the official IBASS Eligibility Checker.
+  </div>
+  <p style="margin-top:14px">
+    <a href="https://www.jamb.gov.ng/" target="_blank" rel="noopener">JAMB Official Website</a> ·
+    <a href="https://eligibility.jamb.gov.ng/" target="_blank" rel="noopener">IBASS Eligibility Checker</a>
+  </p>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px">
+    <button class="primary" onclick="seed()">🚀 Seed / Update Complete JAMB Content</button>
+    <button class="secondary" onclick="preview()">👁 Preview Content</button>
+  </div>
+  <div class="bar" style="margin-top:16px"><i id="progress"></i></div>
+  <div id="status" class="status" style="margin-top:12px">Ready. Log in to the MathCloud Admin Console first.</div>
+</section>
+
+<section class="card" id="preview" style="display:none">
+  <h2 style="margin-top:0">Content Preview</h2>
+  <div id="previewGrid" class="grid"></div>
+</section>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="assets/firebase-config.js"></script>
+<script src="assets/app.js"></script>
 <script>
-async function seed(){const st=document.getElementById('status');try{if(!mcAdmin.isLoggedIn())throw new Error('Please log into Admin Console first, then open this seeder in the same browser tab/session.');const data=await fetch('seed-data/jamb-curriculum.json').then(r=>r.json());const updates={};updates['jambCatalog']={version:data.version,source:data.source,courses:data.courses,subjects:data.subjects,...adminMeta};for(const sub of data.subjects){updates['subjects/'+sub.id]={name:sub.name,category:sub.category,topics:{},...adminMeta};}const plans={"jamb-1m":{label:'JAMB 1 Month',months:1,price:5000,description:'Full JAMB learning access for 30 days.',...adminMeta},"jamb-3m":{label:'JAMB 3 Months',months:3,price:12000,description:'Save 20% versus monthly pricing.',...adminMeta},"jamb-6m":{label:'JAMB 6 Months',months:6,price:20000,description:'Save about 33% versus monthly pricing.',...adminMeta}};Object.entries(plans).forEach(([id,p])=>updates['settings/plans/'+id]=p);await db.ref().update(updates);st.innerHTML='<span class="ok">JAMB catalogue, subjects and subscription plans seeded successfully.</span><pre>'+JSON.stringify({subjects:data.subjects.length,courses:data.courses.length,plans:Object.keys(plans).length},null,2)+'</pre>';}catch(e){st.textContent=e.message||String(e);}}
-</script></body></html>
+const $=id=>document.getElementById(id);
+let DATA=null;
+async function loadData(){if(!DATA) DATA=await fetch('seed-data/jamb-complete-content.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('Could not load jamb-complete-content.json');return r.json()});return DATA}
+function stats(d){
+  const subjects=Object.values(d.subjects);
+  const topics=subjects.reduce((n,s)=>n+Object.keys(s.topics).length,0);
+  const qs=subjects.reduce((n,s)=>n+Object.values(s.topics).reduce((m,t)=>m+(t.questions||[]).length,0),0);
+  $('stats').innerHTML=[
+    ['Subjects',subjects.length,'Official UTME subjects included'],
+    ['Topics',topics,'Curriculum-aligned learning topics'],
+    ['Questions',qs,'Original CBT questions'],
+    ['Per topic',12,'Maximum questions seeded per topic']
+  ].map(x=>`<div class="stat"><b>${x[0]==='Per topic'?'12':x[1]}</b><span>${x[0]} · ${x[2]}</span></div>`).join('');
+}
+async function preview(){
+  const d=await loadData(); stats(d);
+  $('preview').style.display='block';
+  $('previewGrid').innerHTML=Object.values(d.subjects).map(s=>{
+    const topics=Object.entries(s.topics);
+    const count=topics.reduce((n,[,t])=>n+(t.questions||[]).length,0);
+    return `<div class="subject"><strong>${s.name}</strong><small>${topics.length} topics · ${count} questions</small><div style="margin-top:8px;color:#dcecff;font-size:13px">${topics.map(([n])=>`• ${n}`).join('<br>')}</div></div>`;
+  }).join('');
+}
+async function seed(){
+  const st=$('status'), bar=$('progress');
+  try{
+    if(!window.mcAdmin || !mcAdmin.isLoggedIn()) throw new Error('Please log into the MathCloud Admin Console first.');
+    const d=await loadData(); stats(d);
+    const updates={};
+    updates['jambCatalog']={version:d.version,source:'JAMB/IBASS official syllabus references; original MathCloud teaching content',officialSubjectCount:d.officialSubjectCount,subjects:d.officialSubjects,officialReferences:d.officialReferences,...mcAdmin.meta()};
+    const subjects=Object.entries(d.subjects);
+    let done=0;
+    for(const [sid,s] of subjects){
+      updates['subjects/'+sid]={name:s.name,category:s.category,topics:s.topics,...mcAdmin.meta()};
+      done++; bar.style.width=Math.round(done/subjects.length*100)+'%';
+      st.textContent=`Preparing ${s.name}… ${done}/${subjects.length}`;
+      await new Promise(r=>setTimeout(r,8));
+    }
+    // Seed all 12-month MathCloud plans as part of the single official JAMB setup.
+    const prices=[5000,9500,13500,18000,21250,24000,28000,30000,31500,35000,35750,36000];
+    const discounts=[0,5,10,10,15,20,20,25,30,30,35,40];
+    prices.forEach((price,i)=>{
+      const months=i+1;
+      updates[`settings/plans/jamb-${months}m`]={label:`JAMB ${months} Month${months>1?'s':''}`,months,price,discountPercent:discounts[i],currency:'NGN',description:`JAMB learning access for ${months} month${months>1?'s':''}.`,...mcAdmin.meta()};
+    });
+    st.textContent='Writing complete JAMB subject content to Firebase…';
+    await db.ref().update(updates);
+    bar.style.width='100%';
+    const topicCount=subjects.reduce((n,[,s])=>n+Object.keys(s.topics).length,0);
+    const qCount=subjects.reduce((n,[,s])=>n+Object.values(s.topics).reduce((m,t)=>m+(t.questions||[]).length,0),0);
+    st.innerHTML=`<strong style="color:var(--green)">✓ Seed completed successfully.</strong>\n${subjects.length} subjects · ${topicCount} topics · ${qCount} questions · 12 subscription plans.\n\nRich HTML notes and MathJax formula fields are stored with each topic.`;
+    await preview();
+  }catch(e){
+    st.innerHTML=`<strong style="color:var(--red)">Seeder stopped.</strong>\n${e.message||String(e)}`;
+  }
+}
+loadData().then(stats).catch(e=>$('status').textContent=e.message);
+</script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MathCloud JAMB Free Demo</title>
+<meta name="description" content="MathCloud JAMB free demo: Mathematics, Use of English, Biology, Chemistry and Physics.">
+<link rel="icon" href="assets/logo.png">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+body{background:radial-gradient(900px 500px at 10% -10%,rgba(37,99,235,.20),transparent 55%),linear-gradient(135deg,#07111f,#0d1930);color:#eef6ff}
+.wrap{width:min(1180px,calc(100% - 28px));margin:auto}
+.hero{padding:26px 0 18px}.brand{display:flex;align-items:center;gap:12px}.brand img{width:46px;height:46px;border-radius:13px}.brand small{display:block;color:#9db2ca;font-size:11px}
+.hero h1{font-size:clamp(36px,6vw,66px);line-height:.98;margin:28px 0 14px;letter-spacing:-2px}.hero h1 b{color:#8fd3ff}.hero p{max-width:800px;color:#b8c9de;line-height:1.75}
+.demo-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:22px 0}.subject-card{background:linear-gradient(145deg,#10213a,#132d4d);border:1px solid #28486e;border-radius:18px;padding:17px;cursor:pointer;transition:.18s}.subject-card:hover,.subject-card.active{transform:translateY(-2px);border-color:#60a5fa;box-shadow:0 14px 35px #0004}.subject-card h3{margin:0 0 6px}.subject-card p{margin:0;color:#9fb6d0;font-size:12px}
+.panel{background:rgba(13,26,45,.95);border:1px solid #28415f;border-radius:22px;padding:22px;margin-top:16px;box-shadow:0 18px 60px #0004}.topics{display:grid;grid-template-columns:1fr 1fr;gap:12px}.topic{padding:17px;border:1px solid #2d4d73;border-radius:15px;background:#0e213b}.topic h3{margin:0 0 8px}.topic p{color:#9fb6d0;font-size:13px;line-height:1.6}
+.btn{border:0;border-radius:13px;padding:12px 16px;font-weight:800;cursor:pointer;text-decoration:none;display:inline-flex;justify-content:center;align-items:center}.primary{background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff}.ghost{background:#112642;color:#d9eaff;border:1px solid #34567e}
+.notice{background:#0c1e34;border:1px solid #28486e;padding:15px;border-radius:14px;color:#bdd0e5;line-height:1.7}.question{background:#f8fbff;color:#14233a;border-radius:18px;padding:22px;margin-top:16px}.question h3{margin-top:0;color:#0b4f91}.option{display:flex;gap:10px;align-items:flex-start;padding:12px;border:1px solid #cfdaea;border-radius:12px;margin:9px 0;cursor:pointer;background:#fff}.option:hover{border-color:#60a5fa;background:#f3f8ff}.option input{margin-top:4px}.result{font-size:20px;font-weight:800;color:#8fd3ff}
+@media(max-width:900px){.demo-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:600px){.demo-grid,.topics{grid-template-columns:1fr}.wrap{width:min(100% - 20px,1180px)}.panel{padding:16px}}
+</style>
+</head>
+<body>
+<header class="wrap hero">
+  <div class="brand"><img src="assets/logo.png" alt="MathCloud"><div><b>MathCloud Tutorial</b><small>JAMB • UTME • FREE DEMO</small></div></div>
+  <h1>Experience the <b>MathCloud JAMB</b> learning system.</h1>
+  <p>MathCloud teaches you, guides you, prepares you, exposes you to JAMB-standard questions, checks your weaknesses and helps you work on them. Try the free demo before subscribing.</p>
+  <div class="notice"><b>Free access:</b> five subjects, two starter topics per subject and 10 questions per selected topic. <b>Full access:</b> ₦2,500 for one year, with the complete database, notes, diagnostics, weakness analysis and mock preparation.</div>
+</header>
+<main class="wrap">
+  <section class="panel">
+    <h2>1. Choose a subject</h2>
+    <div id="subjects" class="demo-grid"></div>
+  </section>
+  <section class="panel">
+    <h2>2. Choose a starter topic</h2>
+    <div id="topics" class="topics"></div>
+  </section>
+  <section id="quizPanel" class="panel">
+    <h2>3. Start your free 10-question demo</h2>
+    <p id="quizIntro">Choose a subject and topic above.</p>
+    <button id="startBtn" class="btn primary" disabled>Start 10 free questions</button>
+  </section>
+  <section class="panel">
+    <h2>Ready for the full course?</h2>
+    <p>Subscribe for just <b>₦2,500 per year</b> to unlock more questions from the MathCloud database and your complete learning path.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <a class="btn primary" href="index.html#portal">Create / log in to student account</a>
+      <a class="btn ghost" href="index.html#plans">View annual access</a>
+    </div>
+  </section>
+</main>
+<script>
+const DEMO={
+mathematics:{name:"Mathematics",topics:{
+"Number & Algebra":[
+["If 3x+5=20, find x.","5","3","4","6","A"],["Simplify 2^3 × 2^4.","64","128","32","256","B"],["Find the HCF of 18 and 24.","3","6","9","12","B"],["A ratio is 2:3 and the total is 25. Find the larger share.","10","12","15","18","C"],["Solve x²−5x+6=0.","1 and 6","2 and 3","−2 and −3","3 and 6","B"]],
+"Geometry & Mensuration":[
+["Find the area of a triangle with base 12 cm and height 5 cm.","17 cm²","30 cm²","60 cm²","120 cm²","B"],["The angles in a triangle are 2x, 3x and 4x. Find x.","10°","15°","20°","30°","C"],["A circle has radius 7 cm. Using π=22/7, find its circumference.","22 cm","44 cm","49 cm","154 cm","B"],["Find the volume of a cuboid 4 cm by 3 cm by 5 cm.","12 cm³","20 cm³","60 cm³","120 cm³","C"],["A straight line angle is divided into 65° and x. Find x.","25°","65°","115°","125°","C"]]}},
+english:{name:"Use of English",topics:{
+"Grammar & Usage":[
+["Choose the correct option: Neither the teacher nor the students ___ late.","was","were","is","has","B"],["Choose the word closest in meaning to 'brief'.","lengthy","short","weak","bright","B"],["Select the correctly punctuated sentence.","However I went home.","However, I went home.","However I, went home.","However; I went home.","B"],["The opposite of 'scarce' is ___.","rare","limited","abundant","small","C"],["Choose the correct form: She ___ to school every day.","go","goes","going","gone","B"]],
+"Comprehension & Vocabulary":[
+["A passage that explains how something works is mainly ___.","narrative","expository","dramatic","poetic","B"],["'Reluctant' most nearly means ___.","unwilling","excited","certain","careless","A"],["The main idea of a passage is its ___.","least important detail","central message","title only","last sentence","B"],["If a person is 'meticulous', the person is ___.","careless","very careful","angry","fast","B"],["An inference is a conclusion drawn from ___.","evidence","a dictionary only","a heading only","a guess without clues","A"]]}},
+biology:{name:"Biology",topics:{
+"Cell Biology":[
+["The basic structural unit of life is the ___.","tissue","cell","organ","organ system","B"],["Which organelle is mainly responsible for aerobic respiration?","ribosome","nucleus","mitochondrion","vacuole","C"],["The cell membrane is described as ___.","fully rigid","selectively permeable","impermeable","made of cellulose only","B"],["Photosynthesis occurs mainly in the ___.","chloroplast","lysosome","centrosome","nucleolus","A"],["DNA is mainly located in the cell ___.","wall","nucleus","vacuole","cytoplasm only","B"]],
+"Ecology & Genetics":[
+["A relationship in which both organisms benefit is ___.","parasitism","mutualism","predation","competition","B"],["The observable expression of a gene is the ___.","genotype","phenotype","allele","chromosome","B"],["Green plants are called producers because they ___.","eat animals","make organic food","decompose waste","lack chlorophyll","B"],["A group of organisms of the same species in an area is a ___.","community","population","ecosystem","habitat","B"],["Which factor is abiotic?","grass","bacteria","temperature","fungus","C"]]}},
+chemistry:{name:"Chemistry",topics:{
+"Atomic Structure":[
+["The atomic number of an element equals the number of ___.","neutrons","protons","nucleons","shells","B"],["A particle with a negative charge is an ___.","electron","proton","neutron","alpha particle","A"],["Isotopes have the same number of protons but different numbers of ___.","electrons only","neutrons","elements","charges","B"],["The mass number is the sum of protons and ___.","electrons","ions","neutrons","shells","C"],["Which subatomic particle has no charge?","proton","electron","neutron","ion","C"]],
+"Acids, Bases & Reactions":[
+["A solution with pH 3 is ___.","strongly acidic","neutral","alkaline","always salty","A"],["An acid reacts with a carbonate to produce salt, water and ___.","oxygen","hydrogen","carbon dioxide","nitrogen","C"],["The reaction between an acid and a base is called ___.","oxidation","neutralisation","cracking","polymerisation","B"],["Which is a strong acid?","HCl","NaOH","NaCl","NH3","A"],["A substance that speeds up a reaction without being used up is a ___.","solvent","catalyst","reactant","product","B"]]}},
+physics:{name:"Physics",topics:{
+"Measurement & Motion":[
+["The SI unit of force is ___.","joule","watt","newton","pascal","C"],["Speed is calculated as ___.","distance × time","distance ÷ time","time ÷ distance","mass ÷ time","B"],["A body moving at constant velocity has ___.","zero acceleration","infinite acceleration","increasing mass","zero distance","A"],["Which instrument measures electric current?","voltmeter","ammeter","barometer","thermometer","B"],["The gradient of a distance-time graph represents ___.","acceleration","speed","force","mass","B"]],
+"Energy & Electricity":[
+["The SI unit of energy is ___.","newton","joule","ampere","ohm","B"],["Electrical resistance is measured in ___.","volts","ohms","watts","coulombs","B"],["Power is the rate of doing ___.","mass","work","distance","charge only","B"],["In a simple series circuit, the current is ___.","different everywhere","the same through each component","always zero","greater at the switch","B"],["If V=IR, what is V when I=2 A and R=5 Ω?","2.5 V","7 V","10 V","25 V","C"]]}}
+};
+let subjectKey=null,topicKey=null,questions=[],index=0,answers=[];
+const letters=["A","B","C","D"];
+const $=id=>document.getElementById(id);
+function renderSubjects(){
+ $("subjects").innerHTML=Object.entries(DEMO).map(([k,s])=>`<button class="subject-card ${k===subjectKey?"active":""}" onclick="pickSubject('${k}')"><h3>${s.name}</h3><p>2 starter topics · 10 free questions each</p></button>`).join("");
+ if(!subjectKey)pickSubject("mathematics");
+}
+function pickSubject(k){subjectKey=k;topicKey=null;renderSubjects();const topics=DEMO[k].topics;$("topics").innerHTML=Object.keys(topics).map(t=>`<div class="topic"><h3>${t}</h3><p>Starter JAMB practice from the ${DEMO[k].name} demo course.</p><button class="btn primary" onclick="pickTopic('${t.replace(/'/g,"\\'")}')">Choose topic</button></div>`).join("");$("startBtn").disabled=true;$("quizIntro").textContent="Choose one of the two starter topics."; }
+function pickTopic(t){topicKey=t;$("quizIntro").textContent=`Ready: ${DEMO[subjectKey].name} · ${t}`;$("startBtn").disabled=false;}
+$("startBtn").onclick=startQuiz;
+function startQuiz(){questions=DEMO[subjectKey].topics[topicKey].map(x=>({q:x[0],options:[x[1],x[2],x[3],x[4]],correct:x[5]}));questions=questions.sort(()=>Math.random()-.5);index=0;answers=[];renderQuestion();}
+function renderQuestion(){const q=questions[index];$("quizPanel").innerHTML=`<div class="flex between" style="gap:10px;flex-wrap:wrap"><div><span class="badge ok">FREE DEMO</span><h2>Question ${index+1} of ${questions.length}</h2><p class="muted">${DEMO[subjectKey].name} · ${topicKey}</p></div><div class="result">${Math.round(index/questions.length*100)}%</div></div><div class="question"><h3>${q.q}</h3>${q.options.map((o,i)=>`<label class="option"><input type="radio" name="demoAnswer" value="${letters[i]}"><span><b>${letters[i]}.</b> ${o}</span></label>`).join("")}</div><div style="display:flex;justify-content:space-between;gap:10px;margin-top:14px"><button class="btn ghost" onclick="location.reload()">Exit demo</button><button class="btn primary" onclick="nextQuestion()">${index===questions.length-1?"Finish":"Next question"}</button></div>`;}
+async function nextQuestion(){const chosen=document.querySelector('input[name="demoAnswer"]:checked');if(!chosen){await mcAlert("Select an answer before continuing.",{icon:"warn",title:"Answer required"});return;}answers.push(chosen.value===questions[index].correct);if(index<questions.length-1){index++;renderQuestion();return;}const score=answers.filter(Boolean).length,pct=Math.round(score/questions.length*100);$("quizPanel").innerHTML=`<div class="question"><span class="badge ok">DEMO COMPLETE</span><h2 style="color:#0b4f91">You scored ${score}/${questions.length} (${pct}%)</h2><p>Your free demo is designed to show how MathCloud identifies your strengths and areas needing work.</p><div class="notice" style="color:#24405f;background:#eef6ff"><b>Unlock more:</b> Subscribe for ₦2,500 for one year to access the full question database, topic notes, diagnostic checks, weakness-focused practice and mock preparation.</div><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px"><a class="btn primary" href="index.html#portal">Unlock full course access</a><button class="btn ghost" onclick="location.reload()">Try another demo</button></div></div>`;await mcAlert(`You scored ${score} out of ${questions.length}. Keep practising and work on the areas where you lost marks.`,{icon:pct>=70?"success":pct>=40?"warn":"error",title:"Demo result"});}
+renderSubjects();
+</script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="assets/firebase-config.js"></script>
+<script src="assets/app.js"></script>
+<script>
+if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("service-worker.js").catch(()=>{}));}
+</script></body>
+</html>

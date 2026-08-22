@@ -1,0 +1,200 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "admins": {
+      "$adminId": {
+        ".read": false,
+        ".write": "(!root.child('settings/adminInfo').exists()) || (newData.exists() && newData.child('_writerId').val() != null && newData.child('_writerToken').val() != null && root.child('adminSessions').child(newData.child('_writerId').val()).child('token').val() == newData.child('_writerToken').val() && root.child('adminSessions').child(newData.child('_writerId').val()).child('expiresAt').val() > now)",
+        ".validate": "newData.hasChildren(['name','email','passwordHash'])"
+      }
+    },
+    "adminSessions": {
+      "$adminId": {
+        ".read": false,
+        ".write": "newData.exists() && ((auth != null && root.child('settings/adminUsers').child(auth.uid).val() == true && newData.child('token').val() != null && newData.child('expiresAt').isNumber() && newData.child('expiresAt').val() > now) || (newData.child('attemptHash').val() != null && newData.child('attemptHash').val() == root.child('admins').child($adminId).child('passwordHash').val()) || (newData.child('_writerToken').val() != null && root.child('adminSessions').child($adminId).child('token').val() == newData.child('_writerToken').val()))",
+        ".validate": "newData.hasChildren(['token','expiresAt'])"
+      }
+    },
+    "studentByAuthUid": {
+      "$uid": {
+        ".read": "auth != null && auth.uid == $uid",
+        ".write": "(auth != null && auth.uid == $uid && !data.exists() && newData.isString()) || (newData.child('_writerId').val() != null && newData.child('_writerToken').val() != null && root.child('adminSessions').child(newData.child('_writerId').val()).child('token').val() == newData.child('_writerToken').val() && root.child('adminSessions').child(newData.child('_writerId').val()).child('expiresAt').val() > now)",
+        ".validate": "newData.isString() || newData.child('_writerId').val() != null"
+      }
+    },
+    "students": {
+      "$studentId": {
+        ".read": "(auth != null && data.child('authUid').val() == auth.uid) || (auth != null && root.child('settings/adminUsers').child(auth.uid).val() == true)",
+        ".write": "(auth != null && data.exists() && data.child('authUid').val() == auth.uid && newData.child('authUid').val() == auth.uid && newData.child('name').val() == data.child('name').val() && newData.child('email').val() == data.child('email').val() && newData.child('courseId').val() == data.child('courseId').val() && newData.child('courseName').val() == data.child('courseName').val() && newData.child('courseLocked').val() == true && newData.child('subjectSelectionLocked').val() == true && newData.child('selectedSubjects').val() == data.child('selectedSubjects').val() && newData.child('subscription').val() == data.child('subscription').val() && newData.child('assignedSubjects').val() == data.child('assignedSubjects').val() && newData.child('status').val() == data.child('status').val() && newData.child('createdAt').val() == data.child('createdAt').val()) || (auth != null && !data.exists() && newData.child('authUid').val() == auth.uid) || (newData.child('_writerId').val() != null && newData.child('_writerToken').val() != null && root.child('adminSessions').child(newData.child('_writerId').val()).child('token').val() == newData.child('_writerToken').val() && root.child('adminSessions').child(newData.child('_writerId').val()).child('expiresAt').val() > now)",
+        ".validate": "newData.hasChildren(['authUid','name','email','courseName','courseLocked','subjectSelectionLocked','selectedSubjects','subscription','status','createdAt'])",
+        "deviceId": {
+          ".validate": "newData.val() == null || (newData.isString() && (!data.exists() || data.val() == null || data.val() == newData.val()))"
+        },
+        "deviceInfo": {
+          "$other": {
+            ".validate": true
+          }
+        },
+        "lastLogin": {
+          ".validate": "newData.isNumber()"
+        },
+        "authUid": {
+          ".validate": "newData.isString()"
+        },
+        "name": {
+          ".validate": "newData.isString()"
+        },
+        "email": {
+          ".validate": "newData.isString()"
+        },
+        "courseId": {
+          ".validate": "newData.isString()"
+        },
+        "courseName": {
+          ".validate": "newData.isString()"
+        },
+        "courseLocked": {
+          ".validate": "newData.isBoolean()"
+        },
+        "subjectSelectionLocked": {
+          ".validate": "newData.isBoolean()"
+        },
+        "selectedSubjects": {
+          ".validate": "newData.isArray()"
+        },
+        "assignedSubjects": {
+          "$sid": {
+            ".validate": "newData.isBoolean()"
+          }
+        },
+        "subscription": {
+          "status": {
+            ".validate": "newData.val() == 'none' || newData.val() == 'pending' || newData.val() == 'active' || newData.val() == 'expired'"
+          },
+          "plan": {
+            ".validate": "newData.isString()"
+          },
+          "startAt": {
+            ".validate": "newData.isNumber()"
+          },
+          "endAt": {
+            ".validate": "newData.isNumber()"
+          },
+          "$other": true
+        },
+        "status": {
+          ".validate": "newData.val() == 'pending' || newData.val() == 'active' || newData.val() == 'suspended'"
+        },
+        "createdAt": {
+          ".validate": "newData.isNumber()"
+        },
+        "$other": {
+          ".validate": false
+        },
+        ".indexOn": [
+          "email",
+          "authUid"
+        ]
+      },
+      ".read": "auth != null && root.child('settings/adminUsers').child(auth.uid).val() == true"
+    },
+    "settings": {
+      "adminInfo": {
+        ".read": true,
+        ".write": "(newData.child('_writerId').val() != null && root.child('adminSessions').child(newData.child('_writerId').val()).child('token').val() == newData.child('_writerToken').val() && root.child('adminSessions').child(newData.child('_writerId').val()).child('expiresAt').val() > now) || !data.exists()"
+      },
+      "adminIndex": {
+        "$emailKey": {
+          ".read": true,
+          ".write": "(auth != null && root.child('settings/adminInfo').child('email').val() == auth.token.email && !data.exists()) || (newData.child('_writerId').val()!=null && root.child('adminSessions').child(newData.child('_writerId').val()).child('token').val()==newData.child('_writerToken').val())"
+        }
+      },
+      "studentIndex": {
+        "$emailKey": {
+          ".read": true,
+          ".write": "newData.child('_writerId').val()!=null && root.child('adminSessions').child(newData.child('_writerId').val()).child('token').val()==newData.child('_writerToken').val()"
+        }
+      },
+      "plans": {
+        ".read": true,
+        "$planId": {
+          ".write": "newData.child('_writerId').val()!=null && root.child('adminSessions').child(newData.child('_writerId').val()).child('token').val()==newData.child('_writerToken').val() && root.child('adminSessions').child(newData.child('_writerId').val()).child('expiresAt').val()>now"
+        }
+      },
+      "$other": {
+        ".read": true
+      },
+      "adminUsers": {
+        "$uid": {
+          ".read": "auth != null && auth.uid == $uid",
+          ".write": "(auth != null && auth.uid == $uid && root.child('settings/adminInfo').child('email').val() == auth.token.email && !data.exists()) || (newData.child('_writerId').val()!=null && root.child('adminSessions').child(newData.child('_writerId').val()).child('token').val()==newData.child('_writerToken').val())"
+        }
+      }
+    },
+    "jambCatalog": {
+      ".read": true,
+      ".write": "newData.child('_writerId').val()!=null && root.child('adminSessions').child(newData.child('_writerId').val()).child('token').val()==newData.child('_writerToken').val() && root.child('adminSessions').child(newData.child('_writerId').val()).child('expiresAt').val()>now"
+    },
+    "subjects": {
+      "$subjectId": {
+        ".read": "(auth != null && root.child('settings/adminUsers').child(auth.uid).val() == true) || (auth != null && root.child('students').child(root.child('studentByAuthUid').child(auth.uid).val()).child('subscription').child('status').val() == 'active' && root.child('students').child(root.child('studentByAuthUid').child(auth.uid).val()).child('subscription').child('endAt').val() > now)",
+        ".write": "newData.child('_writerId').val()!=null && root.child('adminSessions').child(newData.child('_writerId').val()).child('token').val()==newData.child('_writerToken').val() && root.child('adminSessions').child(newData.child('_writerId').val()).child('expiresAt').val()>now",
+        ".validate": "newData.hasChildren(['name'])"
+      },
+      ".read": "auth != null && (root.child('settings/adminUsers').child(auth.uid).val() == true || root.child('students').child(root.child('studentByAuthUid').child(auth.uid).val()).child('subscription').child('status').val() == 'active' && root.child('students').child(root.child('studentByAuthUid').child(auth.uid).val()).child('subscription').child('endAt').val() > now)"
+    },
+    "questions": {
+      "$subjectId": {
+        "$topicId": {
+          "$questionId": {
+            ".read": "(auth != null && root.child('settings/adminUsers').child(auth.uid).val() == true) || (auth != null && root.child('students').child(root.child('studentByAuthUid').child(auth.uid).val()).child('subscription').child('status').val() == 'active' && root.child('students').child(root.child('studentByAuthUid').child(auth.uid).val()).child('subscription').child('endAt').val() > now)",
+            ".write": "newData.child('_writerId').val()!=null && root.child('adminSessions').child(newData.child('_writerId').val()).child('token').val()==newData.child('_writerToken').val() && root.child('adminSessions').child(newData.child('_writerId').val()).child('expiresAt').val()>now",
+            ".validate": "newData.hasChildren(['question','correct'])"
+          }
+        }
+      },
+      ".read": "auth != null && (root.child('settings/adminUsers').child(auth.uid).val() == true || root.child('students').child(root.child('studentByAuthUid').child(auth.uid).val()).child('subscription').child('status').val() == 'active' && root.child('students').child(root.child('studentByAuthUid').child(auth.uid).val()).child('subscription').child('endAt').val() > now)"
+    },
+    "results": {
+      "$studentId": {
+        ".read": "(auth != null && root.child('students').child($studentId).child('authUid').val() == auth.uid) || (auth != null && root.child('settings/adminUsers').child(auth.uid).val() == true)",
+        ".write": "(auth != null && root.child('students').child($studentId).child('authUid').val() == auth.uid && root.child('students').child($studentId).child('subscription').child('status').val() == 'active' && root.child('students').child($studentId).child('subscription').child('endAt').val() > now) || (newData.child('_adminId').val()!=null && root.child('adminSessions').child(newData.child('_adminId').val()).child('token').val()==newData.child('_adminToken').val() && root.child('adminSessions').child(newData.child('_adminId').val()).child('expiresAt').val()>now)",
+        "$attemptId": {
+          ".validate": "newData.hasChildren(['type','score','total','scorePct'])"
+        }
+      }
+    },
+    "subscriptionRequests": {
+      "$requestId": {
+        ".read": "(auth != null && root.child('students').child(data.child('studentId').val()).child('authUid').val() == auth.uid) || (auth != null && root.child('settings/adminUsers').child(auth.uid).val() == true)",
+        ".write": "(!data.exists() && auth != null && newData.child('studentId').val() == root.child('studentByAuthUid').child(auth.uid).val() && newData.child('status').val() == 'pending') || (newData.child('_writerId').val()!=null && root.child('adminSessions').child(newData.child('_writerId').val()).child('token').val()==newData.child('_writerToken').val() && root.child('adminSessions').child(newData.child('_writerId').val()).child('expiresAt').val()>now)",
+        ".validate": "newData.hasChildren(['studentId','planId','amount','currency','paymentProvider','transactionReference','submittedAt','status']) && ((newData.child('status').val() == 'pending' && newData.child('currency').val() == 'NGN' && newData.child('paymentProvider').val() == 'flutterwave' && newData.child('transactionReference').isString() && newData.child('transactionReference').val().length > 2 && newData.child('amount').isNumber() && newData.child('amount').val() == root.child('settings/plans').child(newData.child('planId').val()).child('price').val()) || (newData.child('_writerId').val() != null && root.child('adminSessions').child(newData.child('_writerId').val()).child('token').val() == newData.child('_writerToken').val() && root.child('adminSessions').child(newData.child('_writerId').val()).child('expiresAt').val() > now && (newData.child('status').val() == 'pending' || newData.child('status').val() == 'approved' || newData.child('status').val() == 'rejected')))"
+      },
+      ".read": "auth != null && (root.child('settings/adminUsers').child(auth.uid).val() == true || (query.orderByChild == 'studentId' && query.equalTo == root.child('studentByAuthUid').child(auth.uid).val()))"
+    },
+    "resultRequests": {
+      "$requestId": {
+        ".read": "(auth != null && root.child('students').child(data.child('studentId').val()).child('authUid').val() == auth.uid) || (auth != null && root.child('settings/adminUsers').child(auth.uid).val() == true)",
+        ".write": "(!data.exists() && auth != null && newData.child('studentId').val() == root.child('studentByAuthUid').child(auth.uid).val() && newData.child('status').val() == 'pending') || (newData.child('_writerId').val()!=null && root.child('adminSessions').child(newData.child('_writerId').val()).child('token').val()==newData.child('_writerToken').val() && root.child('adminSessions').child(newData.child('_writerId').val()).child('expiresAt').val()>now)"
+      },
+      ".read": "auth != null"
+    },
+    "teachingRequests": {
+      "$requestId": {
+        ".read": "(auth != null && root.child('students').child(data.child('studentId').val()).child('authUid').val() == auth.uid) || (auth != null && root.child('settings/adminUsers').child(auth.uid).val() == true)",
+        ".write": "(!data.exists() && auth != null && newData.child('studentId').val() == root.child('studentByAuthUid').child(auth.uid).val() && newData.child('status').val() == 'pending') || (newData.child('_writerId').val()!=null && root.child('adminSessions').child(newData.child('_writerId').val()).child('token').val()==newData.child('_writerToken').val() && root.child('adminSessions').child(newData.child('_writerId').val()).child('expiresAt').val()>now)",
+        ".validate": "newData.hasChildren(['studentId','studentName','serviceLabel','type','topicName','amount','currency','paymentProvider','transactionReference','requestedAt','status']) && ((newData.child('status').val() == 'pending' && newData.child('currency').val() == 'NGN' && newData.child('paymentProvider').val() == 'flutterwave' && newData.child('transactionReference').isString() && newData.child('transactionReference').val().length > 2 && newData.child('amount').isNumber() && (newData.child('amount').val() == 5000 || newData.child('amount').val() == 8000)) || (newData.child('_writerId').val() != null && root.child('adminSessions').child(newData.child('_writerId').val()).child('token').val() == newData.child('_writerToken').val() && root.child('adminSessions').child(newData.child('_writerId').val()).child('expiresAt').val()>now && (newData.child('status').val() == 'pending' || newData.child('status').val() == 'completed' || newData.child('status').val() == 'rejected')))"
+      },
+      ".read": "auth != null"
+    },
+    "teachingResources": {
+      "$resourceId": {
+        ".read": "(auth != null && root.child('students').child(data.child('studentId').val()).child('authUid').val() == auth.uid) || (auth != null && root.child('settings/adminUsers').child(auth.uid).val() == true)",
+        ".write": "(newData.child('_writerId').val()!=null && root.child('adminSessions').child(newData.child('_writerId').val()).child('token').val()==newData.child('_writerToken').val() && root.child('adminSessions').child(newData.child('_writerId').val()).child('expiresAt').val()>now) || (auth != null && root.child('settings/adminUsers').child(auth.uid).val() == true)",
+        ".validate": "newData.hasChildren(['studentId','type','title','topicName','url','sharedAt'])"
+      },
+      ".read": "auth != null"
+    }
+  }
+}

@@ -1,1 +1,107 @@
-<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MathCloud JAMB Admin Setup</title><link rel="stylesheet" href="assets/style.css"></head><body><div class="card" style="max-width:480px;margin:50px auto"><h1>MathCloud JAMB admin setup</h1><p class="muted">Run this once for a new Firebase deployment. It creates the admin in Firebase Authentication and the MathCloud admin registry.</p><label>Admin name</label><input id="name" value="Marshall Jacob"><label>Admin email</label><input id="email" value="marshall12340@gmail.com"><label>Password</label><input id="password" type="password"><button class="btn btn-primary btn-block" id="btn" style="margin-top:15px" onclick="setup()">Create admin</button><div id="status" class="muted" style="margin-top:12px"></div></div><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script><script src="assets/firebase-config.js"></script><script src="assets/app.js"></script><script>async function setup(){const b=document.getElementById('btn'),st=document.getElementById('status'),name=document.getElementById('name').value.trim(),email=document.getElementById('email').value.trim().toLowerCase(),password=document.getElementById('password').value;if(!name||!email||password.length<8){st.textContent='Enter all fields; use at least 8 password characters.';return;}b.disabled=true;try{const exists=await db.ref('settings/adminInfo').once('value');if(exists.exists())throw new Error('An admin is already configured.');const cred=await auth.createUserWithEmailAndPassword(email,password);const uid=cred.user.uid;const adminId=db.ref().push().key;const passwordHash=await mcHash(password);await db.ref().update({['admins/'+adminId]:{name,email,passwordHash,createdAt:Date.now()},['settings/adminIndex/'+mcDbKey(email)]:adminId,['settings/adminInfo']:{name,email}});await db.ref('settings/adminUsers/'+uid).set(true);st.innerHTML='<span style="color:#6ee7b7">Admin created. <a href="admin-login.html">Open admin login</a>.</span>';}catch(e){st.textContent=e.message||'Setup failed.';}finally{b.disabled=false;}}</script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MathCloud — First Admin Setup</title>
+<link rel="icon" href="assets/logo.png"><link rel="stylesheet" href="assets/style.css">
+<style>
+.setup-wrap{min-height:100vh;display:grid;place-items:center;padding:24px;background:linear-gradient(135deg,#eef6ff,#f7fbff)}
+.setup-card{width:min(560px,100%);padding:32px;border-radius:24px;background:#fff;box-shadow:0 20px 60px rgba(15,35,65,.14)}
+.setup-card h1{margin:0 0 8px}.setup-card .muted{line-height:1.6}.setup-status{margin-top:16px;padding:13px 15px;border-radius:12px;display:none;line-height:1.5}.setup-status.show{display:block}.setup-status.error{background:#fff0f0;color:#a32222}.setup-status.ok{background:#ecfaf2;color:#17683c}.setup-status.info{background:#eef5ff;color:#164b9a}.setup-status.warn{background:#fff8e7;color:#765400}.setup-card input{margin-bottom:10px}.setup-note{font-size:12px;margin-top:18px;line-height:1.6}.setup-card button{margin-top:8px}
+</style>
+</head>
+<body>
+<div class="setup-wrap"><div class="setup-card">
+<img src="assets/logo.png" alt="MathCloud" style="width:64px;height:64px;border-radius:16px;object-fit:cover;margin-bottom:18px">
+<h1>First Administrator Setup</h1>
+<p class="muted">Nothing is created automatically. Enter the administrator details and click the button below to create the first Firebase Authentication administrator.</p>
+<div id="status" class="setup-status"></div>
+<form id="setupForm" autocomplete="off">
+<label for="name">Administrator name</label><input id="name" type="text" maxlength="100" required placeholder="Full name">
+<label for="email">Administrator email</label><input id="email" type="email" maxlength="160" required placeholder="admin@example.com">
+<label for="password">Password</label><input id="password" type="password" minlength="8" maxlength="128" required autocomplete="new-password" placeholder="At least 8 characters">
+<label for="confirmPassword">Confirm password</label><input id="confirmPassword" type="password" minlength="8" maxlength="128" required autocomplete="new-password" placeholder="Repeat password">
+<button class="btn btn-primary btn-block" id="btn" type="submit">Create First Administrator</button>
+</form>
+<p class="setup-note muted">The setup page checks <strong>settings/adminInfo</strong>. If an administrator already exists, this page becomes locked and no new account is created.</p>
+</div></div>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="assets/firebase-config.js"></script>
+<script src="assets/app.js"></script>
+<script>
+const form=document.getElementById('setupForm');
+const btn=document.getElementById('btn');
+const statusBox=document.getElementById('status');
+function status(message,type='info'){statusBox.textContent=message;statusBox.className='setup-status show '+type;}
+function emailKey(email){return mcDbKey(String(email).trim().toLowerCase());}
+async function checkSetup(){
+  try{
+    const snap=await db.ref('settings/adminInfo').once('value');
+    if(snap.exists()){
+      form.style.display='none';
+      status('An administrator is already configured. This first-admin setup is locked. Use the normal admin login page.','warn');
+      return false;
+    }
+    status('No administrator exists yet. The form is ready.','info');
+    return true;
+  }catch(e){
+    status('Could not check the Firebase setup state. Make sure the corrected Realtime Database rules are published.','error');
+    return false;
+  }
+}
+form.addEventListener('submit',async e=>{
+  e.preventDefault();
+  const name=document.getElementById('name').value.trim();
+  const email=document.getElementById('email').value.trim().toLowerCase();
+  const password=document.getElementById('password').value;
+  const confirm=document.getElementById('confirmPassword').value;
+  if(name.length<2)return status('Enter the administrator name.','error');
+  if(!email)return status('Enter the administrator email.','error');
+  if(password.length<8)return status('Password must contain at least 8 characters.','error');
+  if(password!==confirm)return status('The passwords do not match.','error');
+  btn.disabled=true;
+  try{
+    const exists=await db.ref('settings/adminInfo').once('value');
+    if(exists.exists())throw new Error('ADMIN_ALREADY_EXISTS');
+
+    // createUser signs the user in automatically. Nothing is created until this button is clicked.
+    btn.textContent='Creating Firebase account…';
+    const cred=await auth.createUserWithEmailAndPassword(email,password);
+    const uid=cred.user.uid;
+
+    btn.textContent='Registering administrator…';
+    await db.ref('settings/adminInfo').set({name,email,adminUid:uid,setupCompleted:false,createdAt:Date.now()});
+
+    await db.ref('settings/adminUsers/'+uid).set(true);
+
+    const adminId=db.ref('admins').push().key;
+    const token=mcRandomToken();
+    const expiresAt=Date.now()+ADMIN_SESSION_TTL_MS;
+    await db.ref('adminSessions/'+adminId).set({token,expiresAt,deviceInfo:mcDeviceInfo()});
+
+    const passwordHash=await mcHash(password);
+    await db.ref('admins/'+adminId).set({name,email,passwordHash,createdAt:Date.now(),_writerId:adminId,_writerToken:token});
+    await db.ref('settings/adminIndex/'+emailKey(email)).set(adminId);
+    await db.ref('settings/adminInfo').update({setupCompleted:true});
+
+    await auth.signOut();
+    form.style.display='none';
+    status('Administrator created successfully. Firebase Authentication UID: '+uid+'. You can now use the normal Admin Login page with the email and password you entered.','ok');
+  }catch(e){
+    console.error(e);
+    if(e.message==='ADMIN_ALREADY_EXISTS')return status('An administrator already exists. Setup is locked.','warn');
+    let msg='Administrator setup failed.';
+    if(e.code==='auth/email-already-in-use')msg='That email already has a Firebase Authentication account. Use that account or choose another email.';
+    else if(e.code==='auth/invalid-email')msg='The administrator email address is invalid.';
+    else if(e.code==='auth/weak-password')msg='Firebase rejected the password because it is too weak.';
+    else if(e.code==='auth/operation-not-allowed')msg='Email/password sign-in is not enabled in Firebase Authentication.';
+    else if(e.code==='PERMISSION_DENIED')msg='Firebase denied a database operation. Publish the corrected database rules first.';
+    else if(e.message)msg=e.message;
+    status(msg,'error');
+  }finally{btn.disabled=false;btn.textContent='Create First Administrator';}
+});
+checkSetup();
+</script>
+</body></html>

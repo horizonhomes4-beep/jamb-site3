@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MathCloud JAMB • System Health</title>
+<link rel="icon" href="assets/logo.png"><link rel="stylesheet" href="assets/style.css">
+<style>
+body{min-height:100vh;padding:24px;background:radial-gradient(800px 500px at 20% 0,#17376b,transparent),#07111f}
+.wrap{max-width:900px;margin:auto}.hero,.check{background:linear-gradient(145deg,#111f3a,#0d172d);border:1px solid #ffffff16;border-radius:22px;padding:22px;margin-bottom:16px;box-shadow:0 20px 60px #0004}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.item{padding:15px;border-radius:15px;background:#ffffff08;border:1px solid #ffffff0d}.ok{color:#6ee7a7}.bad{color:#ff8797}.muted{color:#9fb0c8}@media(max-width:650px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="hero"><h1>MathCloud JAMB System Health</h1><p class="muted">Static project and content validation utility. It does not change Firebase data.</p></div>
+<div class="check"><div id="status">Running checks…</div><div id="results" class="grid" style="margin-top:15px"></div></div>
+<div class="check"><h3>What this checks</h3><p class="muted">HTML page availability, JavaScript syntax dependencies, seed-data structure, subject/topic/question counts and Firebase configuration presence.</p></div>
+</div>
+<script>
+const results=document.getElementById("results");
+const add=(name,ok,detail)=>{results.insertAdjacentHTML("beforeend",`<div class="item"><b class="${ok?"ok":"bad"}">${ok?"✓ PASS":"✕ FAIL"} — ${name}</b><div class="muted" style="margin-top:6px">${detail}</div></div>`);return ok};
+(async()=>{
+ let all=true;
+ for(const f of ["index.html","student.html","admin.html","admin-login.html","seeder-jamb.html","setup.html","offline.html"]){
+   try{const r=await fetch(f,{cache:"no-store"});all=add(f,r.ok,r.ok?"Available":"HTTP "+r.status)&&all}catch(e){all=add(f,false,e.message)&&all}
+ }
+ try{
+   const r=await fetch("seed-data/jamb-complete-content.json",{cache:"no-store"}), d=await r.json();
+   const subs=Object.values(d.subjects||{}); const topics=subs.reduce((n,s)=>n+Object.keys(s.topics||{}).length,0);
+   const qs=subs.reduce((n,s)=>n+Object.values(s.topics||{}).reduce((m,t)=>m+(t.questions||[]).length,0),0);
+   all=add("Seed catalogue",subs.length===25,`${subs.length}/25 subjects; ${topics} topics; ${qs} questions`)&&all;
+   const bad=subs.flatMap(s=>Object.values(s.topics||{})).filter(t=>!t.introduction||!t.detailed||!Array.isArray(t.questions)||t.questions.length<12);
+   all=add("Topic completeness",bad.length===0,`${bad.length} incomplete topics`)&&all;
+ }catch(e){all=add("Seed catalogue",false,e.message)&&all}
+ try{
+   const r=await fetch("assets/firebase-config.js",{cache:"no-store"}), t=await r.text();
+   const ok=/firebaseConfig\s*=/.test(t)&&/databaseURL/.test(t)&&/projectId/.test(t);
+   all=add("Firebase configuration",ok,ok?"Config file found":"Config file is missing required fields")&&all;
+ }catch(e){all=add("Firebase configuration",false,e.message)&&all}
+ document.getElementById("status").innerHTML=all?'<b class="ok">✓ Project health checks passed.</b>':'<b class="bad">✕ One or more checks failed.</b>';
+})();
+</script>
+</body></html>

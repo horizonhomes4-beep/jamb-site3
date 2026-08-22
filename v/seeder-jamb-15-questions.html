@@ -1,0 +1,3039 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MathCloud • JAMB Content Seeder</title>
+<link rel="icon" href="assets/logo.png">
+
+<style>
+:root{
+  --bg:#07111f;
+  --panel:#0d2035;
+  --panel2:#102943;
+  --text:#eef6ff;
+  --muted:#a8bdd2;
+  --gold:#f5b942;
+  --green:#55e6a5;
+  --red:#ff7181;
+  --line:#1f3d5a;
+  --blue:#56b4ff;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:
+    radial-gradient(circle at top,#123152 0,#07111f 50%);
+  color:var(--text);
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,
+  "Segoe UI",Arial,sans-serif;
+}
+.wrap{
+  max-width:1150px;
+  margin:auto;
+  padding:28px;
+}
+.hero,.card{
+  background:rgba(13,32,53,.97);
+  border:1px solid var(--line);
+  border-radius:20px;
+  box-shadow:0 18px 60px #0004;
+}
+.hero{
+  padding:28px;
+  margin-bottom:18px;
+}
+.brand{
+  display:flex;
+  gap:14px;
+  align-items:center;
+}
+.logo{
+  width:52px;
+  height:52px;
+  border-radius:14px;
+  background:#fff;
+  object-fit:contain;
+  padding:5px;
+}
+.brand h1{
+  margin:0;
+  font-size:25px;
+}
+.brand p{
+  margin:5px 0 0;
+  color:var(--muted);
+}
+.card{
+  padding:22px;
+  margin-top:18px;
+}
+.grid{
+  display:grid;
+  grid-template-columns:
+    repeat(auto-fit,minmax(190px,1fr));
+  gap:12px;
+}
+.stat,.subject{
+  background:var(--panel2);
+  padding:17px;
+  border-radius:15px;
+  border:1px solid var(--line);
+}
+.stat b{
+  display:block;
+  font-size:25px;
+}
+.stat span,.subject small{
+  color:var(--muted);
+  font-size:13px;
+}
+.subject strong{
+  display:block;
+  margin-bottom:5px;
+}
+button{
+  border:0;
+  border-radius:12px;
+  padding:13px 18px;
+  font-weight:800;
+  cursor:pointer;
+}
+button:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+}
+.primary{
+  background:var(--gold);
+  color:#07111f;
+}
+.secondary{
+  background:#173653;
+  color:#fff;
+  border:1px solid #2c5477;
+}
+.danger{
+  background:#49202a;
+  color:#fff;
+  border:1px solid #713442;
+}
+.bar{
+  height:12px;
+  background:#173653;
+  border-radius:99px;
+  overflow:hidden;
+}
+.bar i{
+  display:block;
+  height:100%;
+  width:0;
+  background:var(--gold);
+  transition:width .25s ease;
+}
+.status{
+  padding:14px;
+  border-radius:12px;
+  background:#081a2c;
+  color:var(--muted);
+  white-space:pre-wrap;
+  line-height:1.55;
+}
+.warning{
+  border-left:4px solid var(--gold);
+  padding:12px 15px;
+  background:#182a38;
+  color:#dcecff;
+  border-radius:8px;
+}
+.notice{
+  background:#081a2c;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:15px;
+}
+.ok{color:var(--green)}
+.bad{color:var(--red)}
+.blue{color:var(--blue)}
+input{
+  width:100%;
+  padding:12px 13px;
+  border-radius:10px;
+  border:1px solid var(--line);
+  background:#081a2c;
+  color:#fff;
+  outline:none;
+}
+input:focus{
+  border-color:var(--gold);
+}
+.actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.row{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  align-items:center;
+}
+.small{
+  font-size:12px;
+  color:var(--muted);
+}
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:12px;
+}
+th,td{
+  padding:10px;
+  border-bottom:1px solid var(--line);
+  text-align:left;
+  font-size:13px;
+}
+th{
+  color:var(--gold);
+}
+.code{
+  font-family:Consolas,monospace;
+  color:#b8dfff;
+}
+@media(max-width:650px){
+  .wrap{padding:14px}
+  .hero{padding:20px}
+  .card{padding:16px}
+  .brand{
+    align-items:flex-start;
+  }
+  .brand h1{
+    font-size:20px;
+  }
+  .logo{
+    width:44px;
+    height:44px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+<section class="hero">
+
+  <div class="brand">
+
+    <img
+      class="logo"
+      src="assets/logo.png"
+      alt="MathCloud"
+    >
+
+    <div>
+
+      <h1>
+        MathCloud JAMB / UTME Content Seeder
+      </h1>
+
+      <p>
+        Flexible curriculum • complete questions • safe re-seeding
+      </p>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<section class="card">
+
+  <div id="stats" class="grid"></div>
+
+
+  <div
+    class="warning"
+    style="margin-top:14px"
+  >
+
+    <strong>Flexible source-of-truth seeding.</strong>
+
+    Subjects may contain different numbers of topics.
+    Topics may contain different numbers of questions.
+    Optional lesson fields are accepted when supplied.
+
+  </div>
+
+
+  <div
+    class="notice"
+    style="margin-top:14px"
+  >
+
+    <strong>Current Seeder rules</strong>
+
+    <div class="small" style="margin-top:8px">
+
+      No fixed topic count.<br>
+      No fixed question count.<br>
+      No mandatory introduction field.<br>
+      No mandatory detailed field.<br>
+      No mandatory objectives field.<br>
+      All questions in the JSON are seeded.<br>
+      Re-seeding synchronizes the Firebase content with the JSON.
+
+    </div>
+
+  </div>
+
+
+  <p>
+
+    <a
+      href="https://www.jamb.gov.ng/"
+      target="_blank"
+      rel="noopener"
+    >
+      JAMB Official Website
+    </a>
+
+    ·
+
+    <a
+      href="https://eligibility.jamb.gov.ng/"
+      target="_blank"
+      rel="noopener"
+    >
+      JAMB IBASS
+    </a>
+
+  </p>
+
+
+  <div
+    id="authBox"
+    class="notice"
+    style="margin:14px 0"
+  >
+
+    <div class="row">
+
+      <div style="flex:1;min-width:220px">
+
+        <label
+          style="
+            display:block;
+            margin-bottom:5px
+          "
+        >
+          Admin email
+        </label>
+
+        <input
+          id="seedEmail"
+          type="email"
+          autocomplete="username"
+          placeholder="Administrator email"
+        >
+
+      </div>
+
+
+      <div style="flex:1;min-width:220px">
+
+        <label
+          style="
+            display:block;
+            margin-bottom:5px
+          "
+        >
+          Admin password
+        </label>
+
+        <input
+          id="seedPassword"
+          type="password"
+          autocomplete="current-password"
+          placeholder="Administrator password"
+        >
+
+      </div>
+
+
+      <button
+        class="secondary"
+        id="seedLoginBtn"
+        onclick="seedAdminLogin()"
+      >
+        Sign in as admin
+      </button>
+
+
+      <button
+        class="secondary"
+        id="seedGoogleBtn"
+        onclick="seedGoogleLogin()"
+      >
+        Google admin
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <div class="actions">
+
+    <button
+      class="primary"
+      id="seedBtn"
+      onclick="seed()"
+    >
+      🚀 Seed / Re-seed Content
+    </button>
+
+
+    <button
+      class="secondary"
+      onclick="showPreview()"
+    >
+      👁 Preview
+    </button>
+
+
+    <button
+      class="secondary"
+      onclick="validateOnly()"
+    >
+      ✓ Validate JSON
+    </button>
+
+  </div>
+
+
+  <div
+    class="bar"
+    style="margin-top:16px"
+  >
+    <i id="progress"></i>
+  </div>
+
+
+  <div
+    id="status"
+    class="status"
+    style="margin-top:12px"
+  >
+    Loading JAMB content…
+  </div>
+
+</section>
+
+
+<section
+  class="card"
+  id="previewPanel"
+  style="display:none"
+>
+
+  <h2 style="margin-top:0">
+    Curriculum Preview
+  </h2>
+
+  <div id="previewGrid" class="grid"></div>
+
+</section>
+
+
+<section
+  class="card"
+  id="validationPanel"
+  style="display:none"
+>
+
+  <h2 style="margin-top:0">
+    Validation
+  </h2>
+
+  <div id="validationResult"></div>
+
+</section>
+
+</div>
+
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="assets/firebase-config.js"></script>
+
+
+<script>
+
+/* ============================================================
+   MathCloud JAMB / UTME Content Seeder
+   ============================================================
+
+   FINAL DATA POLICY
+
+   1. No fixed subject count.
+   2. No fixed topic count.
+   3. No fixed question count.
+   4. Optional lesson fields remain optional.
+   5. All supplied questions are written.
+   6. Existing content is updated.
+   7. New content is created.
+   8. Removed content is deleted.
+   9. Re-seeding is idempotent.
+   10. Final Firebase state is verified against JSON.
+
+   ============================================================ */
+
+
+/* ============================================================
+   STATE
+   ============================================================ */
+
+let DATA = null;
+let AUTH_USER = null;
+let WRITER = null;
+let SEED_LOCK = false;
+
+
+/* ============================================================
+   DOM
+   ============================================================ */
+
+const $ = id =>
+  document.getElementById(id);
+
+
+/* ============================================================
+   Firebase-safe key
+   ============================================================ */
+
+function mcDbKey(str){
+
+  return String(str || "")
+    .trim()
+    .toLowerCase()
+    .replace(/\./g,",")
+    .replace(/#/g,"%23")
+    .replace(/\$/g,"%24")
+    .replace(/\[/g,"%5B")
+    .replace(/\]/g,"%5D")
+    .replace(/\//g,"%2F");
+
+}
+
+window.mcDbKey = mcDbKey;
+
+
+/* ============================================================
+   Firebase path segment
+   ============================================================ */
+
+function safePath(value){
+
+  return String(value || "")
+    .replace(/\./g,",")
+    .replace(/#/g,"%23")
+    .replace(/\$/g,"%24")
+    .replace(/\[/g,"%5B")
+    .replace(/\]/g,"%5D")
+    .replace(/\//g,"%2F");
+
+}
+
+
+/* ============================================================
+   Slug
+   ============================================================ */
+
+function slug(value){
+
+  return String(value || "")
+    .toLowerCase()
+    .trim()
+    .replace(/&/g,"and")
+    .replace(/[^a-z0-9]+/g,"-")
+    .replace(/^-|-$/g,"")
+    .slice(0,80);
+
+}
+
+
+/* ============================================================
+   Escape
+   ============================================================ */
+
+function esc(value){
+
+  return String(value ?? "")
+    .replace(
+      /[&<>"']/g,
+      char => ({
+        "&":"&amp;",
+        "<":"&lt;",
+        ">":"&gt;",
+        '"':"&quot;",
+        "'":"&#39;"
+      }[char])
+    );
+
+}
+
+
+/* ============================================================
+   Load JSON
+   ============================================================ */
+
+async function load(){
+
+  if(DATA){
+    return DATA;
+  }
+
+
+  const response =
+    await fetch(
+      "seed-data/jamb-complete-content.json",
+      {
+        cache:"no-store"
+      }
+    );
+
+
+  if(!response.ok){
+
+    throw new Error(
+      `Unable to load seed-data/jamb-complete-content.json (${response.status}).`
+    );
+
+  }
+
+
+  DATA =
+    await response.json();
+
+
+  if(
+    !DATA ||
+    typeof DATA !== "object"
+  ){
+
+    throw new Error(
+      "The JAMB content JSON is not a valid object."
+    );
+
+  }
+
+
+  if(
+    !DATA.subjects ||
+    typeof DATA.subjects !== "object"
+  ){
+
+    throw new Error(
+      "The JAMB content JSON does not contain a valid subjects object."
+    );
+
+  }
+
+
+  return DATA;
+
+}
+
+
+/* ============================================================
+   Count curriculum
+   ============================================================ */
+
+function getCounts(data){
+
+  const subjects =
+    Object.entries(
+      data.subjects || {}
+    );
+
+
+  let topicCount = 0;
+  let questionCount = 0;
+
+
+  subjects.forEach(
+    ([,subject]) => {
+
+      const topics =
+        Object.entries(
+          subject?.topics || {}
+        );
+
+
+      topicCount +=
+        topics.length;
+
+
+      topics.forEach(
+        ([,topic]) => {
+
+          if(
+            Array.isArray(
+              topic?.questions
+            )
+          ){
+
+            questionCount +=
+              topic.questions.length;
+
+          }
+
+        }
+      );
+
+    }
+  );
+
+
+  return {
+
+    subjects:
+      subjects.length,
+
+    topics:
+      topicCount,
+
+    questions:
+      questionCount
+
+  };
+
+}
+
+
+/* ============================================================
+   Display statistics
+   ============================================================ */
+
+function stats(data){
+
+  const counts =
+    getCounts(data);
+
+
+  $("stats").innerHTML = [
+
+    ["Subjects",counts.subjects],
+
+    ["Topics",counts.topics],
+
+    ["Questions",counts.questions],
+
+    ["Topic count","Variable"],
+
+    ["Question count","Variable"]
+
+  ]
+  .map(
+    item => `
+
+      <div class="stat">
+
+        <b>
+          ${esc(item[1])}
+        </b>
+
+        <span>
+          ${esc(item[0])}
+        </span>
+
+      </div>
+
+    `
+  )
+  .join("");
+
+}
+
+
+/* ============================================================
+   Validate JSON
+   ============================================================
+
+   IMPORTANT:
+
+   Educational fields are OPTIONAL.
+
+   We only reject structural problems that would prevent
+   Firebase from receiving usable content.
+
+   ============================================================ */
+
+function validateData(data){
+
+  const errors = [];
+  const warnings = [];
+
+  const subjects =
+    Object.entries(
+      data.subjects || {}
+    );
+
+
+  if(!subjects.length){
+
+    errors.push(
+      "No subjects found."
+    );
+
+    return {
+      errors,
+      warnings,
+      counts:getCounts(data)
+    };
+
+  }
+
+
+  const subjectIds =
+    new Set();
+
+
+  subjects.forEach(
+    ([sid,subject]) => {
+
+      if(
+        subjectIds.has(sid)
+      ){
+
+        errors.push(
+          `${sid}: duplicate subject ID.`
+        );
+
+      }
+
+      subjectIds.add(sid);
+
+
+      if(
+        !subject ||
+        typeof subject !== "object"
+      ){
+
+        errors.push(
+          `${sid}: subject is invalid.`
+        );
+
+        return;
+
+      }
+
+
+      if(
+        !subject.topics ||
+        typeof subject.topics !== "object"
+      ){
+
+        errors.push(
+          `${sid}: topics object is missing.`
+        );
+
+        return;
+
+      }
+
+
+      const topicIds =
+        new Set();
+
+
+      Object.entries(
+        subject.topics
+      )
+      .forEach(
+        ([topicName,topic]) => {
+
+          const tid =
+            "t-" +
+            slug(topicName);
+
+
+          if(
+            !topicIds.has(tid)
+          ){
+
+            topicIds.add(tid);
+
+          }
+          else{
+
+            errors.push(
+
+              `${sid}/${topicName}: ` +
+              `topic ID collision after slug generation.`
+
+            );
+
+          }
+
+
+          if(
+            !topic ||
+            typeof topic !== "object"
+          ){
+
+            errors.push(
+              `${sid}/${topicName}: invalid topic object.`
+            );
+
+            return;
+
+          }
+
+
+          /*
+           * Topic questions may be zero or any positive number.
+           * We do NOT require 15.
+           */
+
+          if(
+            topic.questions === undefined ||
+            topic.questions === null
+          ){
+
+            warnings.push(
+              `${sid}/${topicName}: no questions array; 0 questions will be seeded.`
+            );
+
+          }
+          else if(
+            !Array.isArray(
+              topic.questions
+            )
+          ){
+
+            errors.push(
+              `${sid}/${topicName}: questions must be an array.`
+            );
+
+          }
+          else{
+
+            const questionIds =
+              new Set();
+
+
+            topic.questions.forEach(
+              (question,index) => {
+
+                if(
+                  !question ||
+                  typeof question !== "object"
+                ){
+
+                  errors.push(
+                    `${sid}/${topicName}: question ${index + 1} is invalid.`
+                  );
+
+                  return;
+
+                }
+
+
+                const qid =
+                  `q-${String(
+                    index + 1
+                  ).padStart(2,"0")}`;
+
+
+                if(
+                  questionIds.has(qid)
+                ){
+
+                  errors.push(
+                    `${sid}/${topicName}: duplicate question ID ${qid}.`
+                  );
+
+                }
+
+
+                questionIds.add(qid);
+
+
+                if(
+                  !String(
+                    question.question ?? ""
+                  ).trim()
+                ){
+
+                  errors.push(
+                    `${sid}/${topicName}/${qid}: question text is empty.`
+                  );
+
+                }
+
+              }
+            );
+
+          }
+
+
+          /*
+           * These fields are deliberately OPTIONAL.
+           */
+
+          const optionalFields = [
+
+            "introduction",
+            "detailed",
+            "explanation",
+            "objectives",
+            "formulas",
+            "subtopics",
+            "tables",
+            "graphs",
+            "diagrams",
+            "sections",
+            "summary"
+
+          ];
+
+
+          optionalFields.forEach(
+            field => {
+
+              if(
+                topic[field] === undefined
+              ){
+
+                return;
+
+              }
+
+
+              /*
+               * Do not reject the topic merely because an optional
+               * field is empty.
+               */
+
+            }
+          );
+
+        }
+      );
+
+    }
+  );
+
+
+  return {
+
+    errors,
+
+    warnings,
+
+    counts:
+      getCounts(data)
+
+  };
+
+}
+
+
+/* ============================================================
+   Validate only
+   ============================================================ */
+
+async function validateOnly(){
+
+  const panel =
+    $("validationPanel");
+
+
+  const result =
+    $("validationResult");
+
+
+  panel.style.display =
+    "block";
+
+
+  try{
+
+    const data =
+      await load();
+
+
+    stats(data);
+
+
+    const validation =
+      validateData(data);
+
+
+    if(
+      validation.errors.length
+    ){
+
+      result.innerHTML = `
+
+        <div class="bad">
+
+          <strong>
+            Validation failed.
+          </strong>
+
+        </div>
+
+        <ul>
+
+          ${
+            validation.errors
+              .slice(0,50)
+              .map(
+                error =>
+                  `<li>${esc(error)}</li>`
+              )
+              .join("")
+          }
+
+        </ul>
+
+      `;
+
+
+      return;
+
+    }
+
+
+    result.innerHTML = `
+
+      <div class="ok">
+
+        <strong>
+          ✓ JSON is ready for seeding.
+        </strong>
+
+      </div>
+
+      <p>
+
+        ${validation.counts.subjects}
+        subjects ·
+
+        ${validation.counts.topics}
+        topics ·
+
+        ${validation.counts.questions}
+        questions
+
+      </p>
+
+      ${
+        validation.warnings.length
+          ? `
+
+            <div class="warning">
+
+              ${validation.warnings.length}
+              warning(s).
+
+            </div>
+
+          `
+          : ""
+      }
+
+    `;
+
+  }
+
+  catch(error){
+
+    result.innerHTML = `
+
+      <div class="bad">
+
+        ${esc(
+          error.message ||
+          String(error)
+        )}
+
+      </div>
+
+    `;
+
+  }
+
+}
+
+
+/* ============================================================
+   Wait for auth
+   ============================================================ */
+
+async function waitForAuth(){
+
+  if(
+    !firebase.apps.length
+  ){
+
+    throw new Error(
+      "Firebase did not initialize. Check assets/firebase-config.js."
+    );
+
+  }
+
+
+  const firebaseAuth =
+    firebase.auth();
+
+
+  if(
+    typeof firebaseAuth.authStateReady ===
+    "function"
+  ){
+
+    await firebaseAuth.authStateReady();
+
+  }
+
+
+  if(
+    firebaseAuth.currentUser
+  ){
+
+    return firebaseAuth.currentUser;
+
+  }
+
+
+  return await new Promise(
+    resolve => {
+
+      let finished = false;
+
+
+      const unsubscribe =
+        firebaseAuth.onAuthStateChanged(
+          user => {
+
+            if(finished){
+              return;
+            }
+
+
+            finished = true;
+
+            unsubscribe();
+
+            resolve(user);
+
+          }
+        );
+
+
+      setTimeout(
+        () => {
+
+          if(finished){
+            return;
+          }
+
+
+          finished = true;
+
+          unsubscribe();
+
+          resolve(null);
+
+        },
+        12000
+      );
+
+    }
+  );
+
+}
+
+
+/* ============================================================
+   Email login
+   ============================================================ */
+
+async function seedAdminLogin(){
+
+  const email =
+    $("seedEmail")
+      .value
+      .trim()
+      .toLowerCase();
+
+
+  const password =
+    $("seedPassword")
+      .value;
+
+
+  if(
+    !email ||
+    !password
+  ){
+
+    $("status").textContent =
+      "Enter the administrator email and password.";
+
+    return;
+
+  }
+
+
+  try{
+
+    await auth
+      .signInWithEmailAndPassword(
+        email,
+        password
+      );
+
+
+    $("status").textContent =
+      "Administrator authenticated. Preparing writer session…";
+
+
+    await prepareWriter();
+
+
+    $("status").innerHTML = `
+
+      <span class="ok">
+
+        <strong>
+          ✓ Administrator authenticated.
+        </strong>
+
+      </span>
+
+      <br>
+
+      Seeder is ready.
+
+    `;
+
+  }
+
+  catch(error){
+
+    console.error(
+      "Admin login:",
+      error
+    );
+
+
+    $("status").innerHTML = `
+
+      <span class="bad">
+
+        <strong>
+          Admin sign-in failed:
+        </strong>
+
+      </span>
+
+      <br>
+
+      ${esc(
+        error.message ||
+        String(error)
+      )}
+
+    `;
+
+  }
+
+}
+
+
+/* ============================================================
+   Google login
+   ============================================================ */
+
+async function seedGoogleLogin(){
+
+  try{
+
+    const provider =
+      new firebase.auth.GoogleAuthProvider();
+
+
+    provider.setCustomParameters({
+      prompt:"select_account"
+    });
+
+
+    const credential =
+      await auth
+        .signInWithPopup(
+          provider
+        );
+
+
+    const user =
+      credential.user;
+
+
+    const uid =
+      user.uid;
+
+
+    const email =
+      String(
+        user.email || ""
+      )
+      .trim()
+      .toLowerCase();
+
+
+    const adminInfo =
+      await db
+        .ref(
+          "settings/adminInfo"
+        )
+        .once("value");
+
+
+    const registeredEmail =
+      String(
+        adminInfo.val()?.email || ""
+      )
+      .trim()
+      .toLowerCase();
+
+
+    const allowed =
+      await db
+        .ref(
+          `settings/adminUsers/${uid}`
+        )
+        .once("value");
+
+
+    if(
+      allowed.val() !== true
+    ){
+
+      if(
+        email !== registeredEmail
+      ){
+
+        throw new Error(
+          "This Google account is not the registered MathCloud administrator account."
+        );
+
+      }
+
+
+      await db
+        .ref(
+          `settings/adminUsers/${uid}`
+        )
+        .set(true);
+
+    }
+
+
+    $("status").textContent =
+      "Google administrator authenticated. Preparing writer session…";
+
+
+    await prepareWriter();
+
+
+    $("status").innerHTML = `
+
+      <span class="ok">
+
+        <strong>
+          ✓ Google administrator authenticated.
+        </strong>
+
+      </span>
+
+      <br>
+
+      Seeder is ready.
+
+    `;
+
+  }
+
+  catch(error){
+
+    console.error(
+      "Google login:",
+      error
+    );
+
+
+    $("status").innerHTML = `
+
+      <span class="bad">
+
+        <strong>
+          Google admin sign-in failed:
+        </strong>
+
+      </span>
+
+      <br>
+
+      ${esc(
+        error.message ||
+        String(error)
+      )}
+
+    `;
+
+  }
+
+}
+
+
+/* ============================================================
+   Prepare secure writer
+   ============================================================ */
+
+async function prepareWriter(){
+
+  AUTH_USER =
+    await waitForAuth();
+
+
+  if(!AUTH_USER){
+
+    throw new Error(
+      "Firebase has no signed-in administrator session."
+    );
+
+  }
+
+
+  const adminUser =
+    await db
+      .ref(
+        `settings/adminUsers/${AUTH_USER.uid}`
+      )
+      .once("value");
+
+
+  if(
+    adminUser.val() !== true
+  ){
+
+    throw new Error(
+      "The signed-in Firebase account is not authorized as a MathCloud administrator."
+    );
+
+  }
+
+
+  const email =
+    String(
+      AUTH_USER.email || ""
+    )
+    .trim()
+    .toLowerCase();
+
+
+  const key =
+    mcDbKey(email);
+
+
+  const index =
+    await db
+      .ref(
+        `settings/adminIndex/${key}`
+      )
+      .once("value");
+
+
+  if(
+    !index.exists()
+  ){
+
+    throw new Error(
+
+      "Admin profile is missing from " +
+
+      `settings/adminIndex/${key}. ` +
+
+      "Run the existing admin setup/migration first."
+
+    );
+
+  }
+
+
+  const adminId =
+    index.val();
+
+
+  const token =
+    typeof crypto.randomUUID ===
+    "function"
+
+      ? crypto.randomUUID()
+
+      :
+
+      `seed-${Date.now()}-${Math.random()
+        .toString(16)
+        .slice(2)}`;
+
+
+  const expiresAt =
+    Date.now() +
+    30 * 60 * 1000;
+
+
+  await db
+    .ref(
+      `adminSessions/${adminId}`
+    )
+    .set({
+
+      token,
+
+      expiresAt,
+
+      deviceInfo:{
+        name:"JAMB Content Seeder",
+        lastSeen:Date.now()
+      }
+
+    });
+
+
+  WRITER = {
+
+    _writerId:
+      adminId,
+
+    _writerToken:
+      token
+
+  };
+
+
+  return WRITER;
+
+}
+
+
+/* ============================================================
+   Metadata
+   ============================================================ */
+
+function meta(){
+
+  if(!WRITER){
+
+    throw new Error(
+      "Admin writer session is not ready."
+    );
+
+  }
+
+
+  return {
+
+    ...WRITER,
+
+    updatedAt:
+      firebase.database.ServerValue.TIMESTAMP
+
+  };
+
+}
+
+
+/* ============================================================
+   Build topic
+   ============================================================ */
+
+function buildTopic(
+  topicName,
+  topic
+){
+
+  /*
+   * Preserve the fields that already exist in the JSON.
+   * Missing optional fields become harmless defaults.
+   */
+
+  return {
+
+    name:
+      topic.name ||
+      topicName,
+
+    introduction:
+      topic.introduction ||
+      "",
+
+    detailed:
+      topic.detailed ||
+      "",
+
+    explanation:
+      topic.explanation ||
+      "",
+
+    objectives:
+      Array.isArray(topic.objectives)
+        ? topic.objectives
+        : [],
+
+    formulas:
+      topic.formulas ||
+      [],
+
+    subtopics:
+      topic.subtopics ||
+      [],
+
+    tables:
+      topic.tables ||
+      [],
+
+    graphs:
+      topic.graphs ||
+      [],
+
+    diagrams:
+      topic.diagrams ||
+      [],
+
+    sections:
+      topic.sections ||
+      [],
+
+    summary:
+      topic.summary ||
+      "",
+
+    ...meta()
+
+  };
+
+}
+
+
+/* ============================================================
+   Build question
+   ============================================================ */
+
+function buildQuestion(
+  question
+){
+
+  return {
+
+    question:
+      question.question ||
+      "",
+
+    optionA:
+      question.optionA ||
+      "",
+
+    optionB:
+      question.optionB ||
+      "",
+
+    optionC:
+      question.optionC ||
+      "",
+
+    optionD:
+      question.optionD ||
+      "",
+
+    correct:
+      question.correct ||
+      "",
+
+    difficulty:
+      question.difficulty ||
+      "Medium",
+
+    explanation:
+      question.explanation ||
+      "",
+
+    ...meta()
+
+  };
+
+}
+
+
+/* ============================================================
+   Preview
+   ============================================================ */
+
+async function showPreview(){
+
+  try{
+
+    const data =
+      await load();
+
+
+    stats(data);
+
+
+    $("previewPanel")
+      .style
+      .display = "block";
+
+
+    $("previewGrid").innerHTML =
+
+      Object
+        .entries(
+          data.subjects || {}
+        )
+        .map(
+          ([sid,subject]) => {
+
+            const topics =
+              Object.entries(
+                subject.topics || {}
+              );
+
+
+            const questions =
+              topics.reduce(
+                (total,[,topic]) =>
+
+                  total +
+
+                  (
+                    Array.isArray(
+                      topic.questions
+                    )
+                      ? topic.questions.length
+                      : 0
+                  ),
+
+                0
+              );
+
+
+            return `
+
+              <div class="subject">
+
+                <strong>
+                  ${esc(
+                    subject.name ||
+                    sid
+                  )}
+                </strong>
+
+                <small>
+
+                  ${topics.length}
+                  topics ·
+
+                  ${questions}
+                  questions
+
+                </small>
+
+                <div
+                  style="
+                    margin-top:9px;
+                    font-size:13px
+                  "
+                >
+
+                  ${topics
+                    .map(
+                      ([name,topic]) => `
+
+                        <div
+                          style="
+                            padding:5px 0;
+                            border-bottom:1px solid #1f3d5a
+                          "
+                        >
+
+                          ${esc(name)}
+
+                          <span
+                            class="small"
+                            style="float:right"
+                          >
+
+                            ${
+                              Array.isArray(
+                                topic.questions
+                              )
+                                ? topic.questions.length
+                                : 0
+                            }
+
+                            questions
+
+                          </span>
+
+                        </div>
+
+                      `
+                    )
+                    .join("")}
+
+                </div>
+
+              </div>
+
+            `;
+
+          }
+        )
+        .join("");
+
+  }
+
+  catch(error){
+
+    console.error(
+      "Preview:",
+      error
+    );
+
+
+    $("status").innerHTML =
+
+      `<span class="bad">${esc(
+        error.message ||
+        "Preview failed."
+      )}</span>`;
+
+  }
+
+}
+
+
+/* ============================================================
+   Firebase update path conflict check
+   ============================================================ */
+
+function assertNoAncestorPaths(
+  updates
+){
+
+  const paths =
+    Object.keys(
+      updates
+    )
+    .sort();
+
+
+  for(
+    let i = 0;
+    i < paths.length - 1;
+    i++
+  ){
+
+    if(
+      paths[i + 1]
+        .startsWith(
+          paths[i] + "/"
+        )
+    ){
+
+      throw new Error(
+
+        "Firebase update path conflict: " +
+
+        `${paths[i]} is an ancestor of ` +
+
+        `${paths[i + 1]}.`
+
+      );
+
+    }
+
+  }
+
+}
+
+
+/* ============================================================
+   Seed / Re-seed
+   ============================================================ */
+
+async function seed(){
+
+  if(SEED_LOCK){
+    return;
+  }
+
+
+  SEED_LOCK = true;
+
+
+  const button =
+    $("seedBtn");
+
+
+  const status =
+    $("status");
+
+
+  const bar =
+    $("progress");
+
+
+  button.disabled =
+    true;
+
+
+  bar.style.width =
+    "0%";
+
+
+  try{
+
+    /* --------------------------------------------------------
+       Load
+       -------------------------------------------------------- */
+
+    const data =
+      await load();
+
+
+    stats(data);
+
+
+    /* --------------------------------------------------------
+       Validate
+       -------------------------------------------------------- */
+
+    status.textContent =
+      "Validating JAMB content…";
+
+
+    const validation =
+      validateData(data);
+
+
+    if(
+      validation.errors.length
+    ){
+
+      throw new Error(
+
+        `Seed validation failed. ` +
+
+        `${validation.counts.subjects} subject(s), ` +
+
+        `${validation.counts.topics} topic(s), ` +
+
+        `${validation.counts.questions} question(s) detected. ` +
+
+        `${validation.errors.length} issue(s) found. ` +
+
+        `First issues: ` +
+
+        validation.errors
+          .slice(0,15)
+          .join("; ")
+
+      );
+
+    }
+
+
+    /* --------------------------------------------------------
+       Authentication
+       -------------------------------------------------------- */
+
+    status.textContent =
+      "Preparing secure administrator writer…";
+
+
+    await prepareWriter();
+
+
+    /* --------------------------------------------------------
+       Read existing content
+       -------------------------------------------------------- */
+
+    status.textContent =
+      "Reading existing Firebase curriculum…";
+
+
+    const [
+      subjectsSnapshot,
+      questionsSnapshot
+    ] = await Promise.all([
+
+      db
+        .ref("subjects")
+        .once("value"),
+
+      db
+        .ref("questions")
+        .once("value")
+
+    ]);
+
+
+    const existingSubjects =
+      subjectsSnapshot.val() || {};
+
+
+    const existingQuestions =
+      questionsSnapshot.val() || {};
+
+
+    /* --------------------------------------------------------
+       Updates
+       -------------------------------------------------------- */
+
+    const updates = {};
+
+
+    /* --------------------------------------------------------
+       Payment
+       -------------------------------------------------------- */
+
+    updates[
+      "settings/payment"
+    ] = {
+
+      paymentLink:
+        "https://flutterwave.com/pay/7n1wlo69qnrs",
+
+      provider:
+        "flutterwave",
+
+      updatedAt:
+        firebase.database.ServerValue.TIMESTAMP
+
+    };
+
+
+    /* --------------------------------------------------------
+       Catalogue
+       -------------------------------------------------------- */
+
+    updates[
+      "jambCatalog"
+    ] = {
+
+      version:
+        data.version,
+
+      title:
+        data.title,
+
+      officialSubjectCount:
+        data.officialSubjectCount,
+
+      officialSubjects:
+        data.officialSubjects,
+
+      officialReferences:
+        data.officialReferences,
+
+      courses:
+        data.courses || [],
+
+      catalogSource:
+        data.catalogSource ||
+        "Official JAMB/IBASS requirements",
+
+      sourcePolicy:
+        "JAMB/IBASS syllabus scope; original MathCloud teaching content",
+
+      ...meta()
+
+    };
+
+
+    /* --------------------------------------------------------
+       Source subjects
+       -------------------------------------------------------- */
+
+    const entries =
+      Object.entries(
+        data.subjects || {}
+      );
+
+
+    const sourceSubjectIds =
+      new Set(
+        entries.map(
+          ([sid]) => sid
+        )
+      );
+
+
+    /* --------------------------------------------------------
+       Remove subjects no longer in JSON
+       -------------------------------------------------------- */
+
+    Object.keys(
+      existingSubjects
+    )
+    .forEach(
+      sid => {
+
+        if(
+          !sourceSubjectIds.has(
+            sid
+          )
+        ){
+
+          updates[
+            `subjects/${safePath(sid)}`
+          ] = null;
+
+
+          updates[
+            `questions/${safePath(sid)}`
+          ] = null;
+
+        }
+
+      }
+    );
+
+
+    /* --------------------------------------------------------
+       Process subjects
+       -------------------------------------------------------- */
+
+    let processedTopics = 0;
+
+    const totalTopics =
+      validation.counts.topics;
+
+
+    for(
+      const [sid,subject]
+      of entries
+    ){
+
+      const safeSid =
+        safePath(sid);
+
+
+      const existingSubject =
+        existingSubjects[sid] || {};
+
+
+      const existingTopicMap =
+        existingSubject.topics || {};
+
+
+      const sourceTopicEntries =
+        Object.entries(
+          subject.topics || {}
+        );
+
+
+      const sourceTopicIds =
+        new Set();
+
+
+      const subjectTopics = {};
+
+
+      /* ------------------------------------------------------
+         Process topics
+         ------------------------------------------------------ */
+
+      for(
+        const [topicName,topic]
+        of sourceTopicEntries
+      ){
+
+        const tid =
+          "t-" +
+          slug(topicName);
+
+
+        const safeTid =
+          safePath(tid);
+
+
+        sourceTopicIds.add(
+          tid
+        );
+
+
+        subjectTopics[tid] =
+          buildTopic(
+            topicName,
+            topic
+          );
+
+
+        /* ----------------------------------------------------
+           Questions
+           ---------------------------------------------------- */
+
+        const sourceQuestions =
+          Array.isArray(
+            topic.questions
+          )
+            ? topic.questions
+            : [];
+
+
+        const existingTopicQuestions =
+          existingQuestions
+            [sid]
+            ?.[tid] || {};
+
+
+        const sourceQuestionIds =
+          new Set();
+
+
+        sourceQuestions.forEach(
+          (question,index) => {
+
+            const qid =
+              `q-${String(
+                index + 1
+              ).padStart(2,"0")}`;
+
+
+            const safeQid =
+              safePath(qid);
+
+
+            sourceQuestionIds.add(
+              qid
+            );
+
+
+            updates[
+              `questions/${safeSid}/${safeTid}/${safeQid}`
+            ] =
+              buildQuestion(
+                question
+              );
+
+          }
+        );
+
+
+        /* ----------------------------------------------------
+           Delete questions removed from JSON
+           ---------------------------------------------------- */
+
+        Object.keys(
+          existingTopicQuestions
+        )
+        .forEach(
+          oldQid => {
+
+            if(
+              !sourceQuestionIds.has(
+                oldQid
+              )
+            ){
+
+              updates[
+                `questions/${safeSid}/${safeTid}/${safePath(oldQid)}`
+              ] = null;
+
+            }
+
+          }
+        );
+
+
+        processedTopics++;
+
+
+        const percent =
+          totalTopics
+            ? Math.round(
+                processedTopics /
+                totalTopics *
+                100
+              )
+            : 100;
+
+
+        bar.style.width =
+          `${percent}%`;
+
+
+        status.textContent =
+
+          `Preparing ${subject.name || sid}… ` +
+
+          `${processedTopics}/${totalTopics} topics`;
+
+      }
+
+
+      /* ------------------------------------------------------
+         Delete topics removed from JSON
+         ------------------------------------------------------ */
+
+      Object.keys(
+        existingTopicMap
+      )
+      .forEach(
+        oldTid => {
+
+          if(
+            !sourceTopicIds.has(
+              oldTid
+            )
+          ){
+
+            updates[
+              `questions/${safeSid}/${safePath(oldTid)}`
+            ] = null;
+
+          }
+
+        }
+      );
+
+
+      /* ------------------------------------------------------
+         Complete subject
+         ------------------------------------------------------ */
+
+      updates[
+        `subjects/${safeSid}`
+      ] = {
+
+        name:
+          subject.name ||
+          sid,
+
+        category:
+          subject.category ||
+          "",
+
+        topics:
+          subjectTopics,
+
+        ...meta()
+
+      };
+
+    }
+
+
+    /* --------------------------------------------------------
+       Subscription plans
+       -------------------------------------------------------- */
+
+    const prices = [
+
+      5000,
+      9500,
+      13500,
+      18000,
+      21250,
+      24000,
+      28000,
+      30000,
+      31500,
+      35000,
+      35750,
+      36000
+
+    ];
+
+
+    const discounts = [
+
+      0,
+      5,
+      10,
+      10,
+      15,
+      20,
+      20,
+      25,
+      30,
+      30,
+      35,
+      40
+
+    ];
+
+
+    prices.forEach(
+      (price,index) => {
+
+        const months =
+          index + 1;
+
+
+        updates[
+          `settings/plans/jamb-${months}m`
+        ] = {
+
+          label:
+            `JAMB ${months} Month${
+              months > 1
+                ? "s"
+                : ""
+            }`,
+
+          months,
+
+          price,
+
+          discountPercent:
+            discounts[index],
+
+          currency:
+            "NGN",
+
+          description:
+            `JAMB learning access for ${months} month${
+              months > 1
+                ? "s"
+                : ""
+            }.`,
+
+          ...meta()
+
+        };
+
+      }
+    );
+
+
+    /* --------------------------------------------------------
+       Seeder manifest
+       -------------------------------------------------------- */
+
+    updates[
+      "settings/jambSeeder"
+    ] = {
+
+      version:
+        String(
+          data.version ||
+          "1"
+        ),
+
+      source:
+        "seed-data/jamb-complete-content.json",
+
+      mode:
+        "source-of-truth-synchronization",
+
+      subjectCount:
+        validation.counts.subjects,
+
+      topicCount:
+        validation.counts.topics,
+
+      questionCount:
+        validation.counts.questions,
+
+      fixedTopicCount:
+        false,
+
+      fixedQuestionCount:
+        false,
+
+      lastSeedAt:
+        firebase.database.ServerValue.TIMESTAMP,
+
+      ...meta()
+
+    };
+
+
+    /* --------------------------------------------------------
+       Firebase path safety
+       -------------------------------------------------------- */
+
+    assertNoAncestorPaths(
+      updates
+    );
+
+
+    /* --------------------------------------------------------
+       Write
+       -------------------------------------------------------- */
+
+    status.textContent =
+      "Writing curriculum to Firebase…";
+
+
+    await db
+      .ref()
+      .update(
+        updates
+      );
+
+
+    /* --------------------------------------------------------
+       Verification
+       -------------------------------------------------------- */
+
+    status.textContent =
+      "Verifying Firebase content…";
+
+
+    const [
+      finalSubjectsSnapshot,
+      finalQuestionsSnapshot
+    ] = await Promise.all([
+
+      db
+        .ref("subjects")
+        .once("value"),
+
+      db
+        .ref("questions")
+        .once("value")
+
+    ]);
+
+
+    const finalSubjects =
+      finalSubjectsSnapshot.val() || {};
+
+
+    const finalQuestions =
+      finalQuestionsSnapshot.val() || {};
+
+
+    const verifyProblems = [];
+
+
+    /* --------------------------------------------------------
+       Verify subjects
+       -------------------------------------------------------- */
+
+    for(
+      const [sid,subject]
+      of entries
+    ){
+
+      const remoteSubject =
+        finalSubjects[sid];
+
+
+      if(!remoteSubject){
+
+        verifyProblems.push(
+          `${sid}: subject missing`
+        );
+
+        continue;
+
+      }
+
+
+      const expectedTopicIds =
+        Object.keys(
+          subject.topics || {}
+        )
+        .map(
+          name =>
+            "t-" +
+            slug(name)
+        );
+
+
+      const actualTopicIds =
+        Object.keys(
+          remoteSubject.topics || {}
+        );
+
+
+      if(
+        expectedTopicIds.length !==
+        actualTopicIds.length
+      ){
+
+        verifyProblems.push(
+
+          `${sid}: expected ` +
+
+          `${expectedTopicIds.length} topics, ` +
+
+          `found ${actualTopicIds.length}`
+
+        );
+
+      }
+
+
+      /* ------------------------------------------------------
+         Verify every topic
+         ------------------------------------------------------ */
+
+      Object.entries(
+        subject.topics || {}
+      )
+      .forEach(
+        ([topicName,topic]) => {
+
+          const tid =
+            "t-" +
+            slug(topicName);
+
+
+          const remoteTopic =
+            remoteSubject
+              .topics
+              ?.[tid];
+
+
+          if(!remoteTopic){
+
+            verifyProblems.push(
+              `${sid}/${topicName}: topic missing`
+            );
+
+            return;
+
+          }
+
+
+          const expectedQuestions =
+            Array.isArray(
+              topic.questions
+            )
+              ? topic.questions.length
+              : 0;
+
+
+          const remoteQuestionMap =
+            finalQuestions
+              [sid]
+              ?.[tid] || {};
+
+
+          const actualQuestions =
+            Object.keys(
+              remoteQuestionMap
+            ).length;
+
+
+          if(
+            expectedQuestions !==
+            actualQuestions
+          ){
+
+            verifyProblems.push(
+
+              `${sid}/${topicName}: expected ` +
+
+              `${expectedQuestions} questions, ` +
+
+              `found ${actualQuestions}`
+
+            );
+
+          }
+
+        }
+      );
+
+    }
+
+
+    /* --------------------------------------------------------
+       Verify stale subjects
+       -------------------------------------------------------- */
+
+    Object.keys(
+      finalSubjects
+    )
+    .forEach(
+      sid => {
+
+        if(
+          !sourceSubjectIds.has(
+            sid
+          )
+        ){
+
+          verifyProblems.push(
+            `${sid}: stale subject remains`
+          );
+
+        }
+
+      }
+    );
+
+
+    /* --------------------------------------------------------
+       Stop if verification failed
+       -------------------------------------------------------- */
+
+    if(
+      verifyProblems.length
+    ){
+
+      throw new Error(
+
+        "Post-seed verification failed: " +
+
+        verifyProblems
+          .slice(0,20)
+          .join("; ")
+
+      );
+
+    }
+
+
+    /* --------------------------------------------------------
+       Complete
+       -------------------------------------------------------- */
+
+    bar.style.width =
+      "100%";
+
+
+    status.innerHTML = `
+
+      <span class="ok">
+
+        <strong>
+          ✓ Seed / re-seed completed successfully.
+        </strong>
+
+      </span>
+
+      <br><br>
+
+      ${validation.counts.subjects}
+      subject(s)
+
+      ·
+
+      ${validation.counts.topics}
+      topic(s)
+
+      ·
+
+      ${validation.counts.questions}
+      question(s)
+
+      <br><br>
+
+      Firebase matches the current JSON source.
+
+      <br>
+
+      <span class="small">
+
+        No fixed topic count.
+        No fixed question count.
+        Optional lesson fields accepted.
+
+      </span>
+
+    `;
+
+
+    await showPreview();
+
+  }
+
+  catch(error){
+
+    console.error(
+      "Seeder error:",
+      error
+    );
+
+
+    status.innerHTML = `
+
+      <span class="bad">
+
+        <strong>
+          Seeder stopped.
+        </strong>
+
+      </span>
+
+      <br><br>
+
+      ${esc(
+        error.code || ""
+      )}
+
+      ${esc(
+        error.message ||
+        String(error)
+      )}
+
+    `;
+
+  }
+
+  finally{
+
+    button.disabled =
+      false;
+
+    SEED_LOCK =
+      false;
+
+  }
+
+}
+
+
+/* ============================================================
+   Initialisation
+   ============================================================ */
+
+(async function(){
+
+  try{
+
+    const data =
+      await load();
+
+
+    stats(data);
+
+
+    const validation =
+      validateData(data);
+
+
+    if(
+      validation.errors.length
+    ){
+
+      $("status").innerHTML = `
+
+        <span class="bad">
+
+          ${esc(
+            validation.errors[0]
+          )}
+
+        </span>
+
+        <br>
+
+        Use <strong>Validate JSON</strong>
+        for the complete validation report.
+
+      `;
+
+    }
+    else{
+
+      $("status").innerHTML = `
+
+        <span class="ok">
+
+          ✓ ${validation.counts.subjects}
+          subjects ·
+          ${validation.counts.topics}
+          topics ·
+          ${validation.counts.questions}
+          questions loaded.
+
+        </span>
+
+        <br>
+
+        Sign in as administrator to seed.
+
+      `;
+
+    }
+
+
+    const user =
+      await waitForAuth();
+
+
+    if(user){
+
+      $("status").textContent =
+        "Administrator session detected. Preparing writer…";
+
+
+      await prepareWriter();
+
+
+      $("status").innerHTML = `
+
+        <span class="ok">
+
+          <strong>
+            ✓ Administrator session ready.
+          </strong>
+
+        </span>
+
+        <br>
+
+        You can now seed or re-seed the JAMB content.
+
+      `;
+
+    }
+
+  }
+
+  catch(error){
+
+    console.error(
+      "Seeder initialization:",
+      error
+    );
+
+
+    $("status").innerHTML = `
+
+      <span class="bad">
+
+        ${esc(
+          error.message ||
+          String(error)
+        )}
+
+      </span>
+
+    `;
+
+  }
+
+})();
+
+</script>
+
+</body>
+</html>

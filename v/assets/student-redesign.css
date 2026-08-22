@@ -1,0 +1,225 @@
+
+/* MathCloud Student Portal — Alternate Student Experience
+   UI-only layer. Does not alter Firebase/database/authentication behavior. */
+:root{
+  --mc-bg:#f5f7fb;
+  --mc-panel:#ffffff;
+  --mc-ink:#172033;
+  --mc-muted:#68738a;
+  --mc-line:#e4e9f2;
+  --mc-brand:#5b4bdb;
+  --mc-brand2:#7c5cff;
+  --mc-accent:#12b981;
+  --mc-warm:#f59e0b;
+  --mc-danger:#ef476f;
+  --mc-shadow:0 18px 50px rgba(28,39,68,.10);
+  --mc-radius:20px;
+}
+body.student-page{
+  background:linear-gradient(135deg,#f8faff 0%,#f2f4fb 52%,#eef8f6 100%);
+  color:var(--mc-ink);
+}
+.student-page .topbar{
+  height:76px!important;
+  padding:0 28px!important;
+  background:rgba(255,255,255,.92)!important;
+  border-bottom:1px solid var(--mc-line)!important;
+  box-shadow:0 5px 25px rgba(28,39,68,.06)!important;
+  backdrop-filter:blur(14px);
+}
+.student-page .brand{font-weight:800!important;letter-spacing:-.3px}
+.student-page .brand small{color:var(--mc-muted)!important}
+.student-page .brand-badge{
+  width:46px!important;height:46px!important;border-radius:15px!important;
+  background:#fff!important;border:1px solid var(--mc-line)!important;
+  box-shadow:0 8px 20px rgba(91,75,219,.12)!important;
+}
+.student-page .brand-badge img{width:100%;height:100%;object-fit:contain;border-radius:13px}
+.student-page .app-shell{min-height:calc(100vh - 76px)}
+.student-page .sidebar{
+  width:250px!important;
+  background:rgba(255,255,255,.94)!important;
+  border-right:1px solid var(--mc-line)!important;
+  padding:22px 15px!important;
+}
+.student-page .sidebar nav a{
+  margin:4px 0!important;padding:12px 14px!important;border-radius:13px!important;
+  color:#5c6780!important;font-weight:650!important;transition:.18s ease;
+}
+.student-page .sidebar nav a:hover{background:#f1efff!important;color:var(--mc-brand)!important;transform:translateX(2px)}
+.student-page .sidebar nav a.active{
+  background:linear-gradient(100deg,#ece9ff,#f5f3ff)!important;
+  color:var(--mc-brand)!important;
+  box-shadow:inset 3px 0 0 var(--mc-brand);
+}
+.student-page .sidebar .grp{
+  color:#a0a8b9!important;font-size:10px!important;letter-spacing:1.4px!important;
+  font-weight:800!important;margin:22px 12px 8px!important;
+}
+.student-page .main{max-width:1440px!important;padding:28px!important}
+.student-page .main>section>h1{font-size:clamp(27px,3vw,38px)!important;letter-spacing:-1px!important;margin-bottom:5px}
+.student-page .main>section>p{color:var(--mc-muted);max-width:760px}
+.student-page .card,.student-page .stat{
+  background:rgba(255,255,255,.94)!important;
+  border:1px solid var(--mc-line)!important;
+  border-radius:var(--mc-radius)!important;
+  box-shadow:0 8px 30px rgba(28,39,68,.055)!important;
+}
+.student-page .card{padding:22px!important}
+.student-page .card:hover{box-shadow:var(--mc-shadow)!important}
+.student-page .stat{padding:20px!important;position:relative;overflow:hidden}
+.student-page .stat:after{
+  content:"";position:absolute;width:90px;height:90px;border-radius:50%;
+  right:-35px;top:-35px;background:#f0edff;
+}
+.student-page .stat .n{font-size:30px!important;color:var(--mc-brand)!important;font-weight:850!important}
+.student-page .stat .l{color:var(--mc-muted)!important;font-weight:600}
+.student-page .btn{border-radius:12px!important;font-weight:750!important;transition:.18s ease}
+.student-page .btn:hover{transform:translateY(-1px)}
+.student-page .btn-primary{
+  background:linear-gradient(135deg,var(--mc-brand),var(--mc-brand2))!important;
+  border-color:transparent!important;box-shadow:0 8px 18px rgba(91,75,219,.20)!important;
+}
+.student-page .btn-ghost{background:#fff!important;border:1px solid var(--mc-line)!important}
+.student-page .badge{border-radius:99px!important;padding:7px 11px!important;font-weight:750!important}
+.student-page input,.student-page select,.student-page textarea{
+  background:#fbfcff!important;border:1px solid #dce2ed!important;
+  border-radius:12px!important;padding:12px 13px!important;
+}
+.student-page input:focus,.student-page select:focus,.student-page textarea:focus{
+  outline:none!important;border-color:#9b8fff!important;
+  box-shadow:0 0 0 4px rgba(91,75,219,.09)!important;
+}
+.student-page .voice-tools{
+  border-radius:16px!important;padding:12px 16px!important;
+  display:flex!important;align-items:center!important;
+  background:linear-gradient(90deg,#fff,#f8f7ff)!important;
+}
+.student-page .voice-tools select{width:auto;min-width:210px}
+.student-page .subject-pill{
+  border:1px solid var(--mc-line)!important;background:#fff!important;
+  border-radius:14px!important;padding:11px 15px!important;
+  box-shadow:0 4px 12px rgba(28,39,68,.04);
+}
+.student-page .subject-pill:hover{border-color:#b6adff!important;color:var(--mc-brand)!important}
+.student-page .subject-pill.active{
+  background:linear-gradient(135deg,#eeeaff,#f7f5ff)!important;
+  border-color:#b4aaff!important;color:var(--mc-brand)!important;
+}
+.student-page table{border-radius:14px;overflow:hidden}
+.student-page th{background:#f5f6fb!important;color:#626d84!important}
+.student-page tr:hover td{background:#fafaff!important}
+.student-page .topic-accordion{
+  display:none!important;
+}
+
+/* Topic library cards */
+#topicAccordionList{
+  display:grid!important;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));
+  gap:16px!important;margin-top:16px;
+}
+.mc-topic-card{
+  background:#fff;border:1px solid var(--mc-line);border-radius:18px;
+  padding:19px;box-shadow:0 8px 25px rgba(28,39,68,.055);
+  display:flex;flex-direction:column;min-height:180px;transition:.2s ease;
+}
+.mc-topic-card:hover{transform:translateY(-3px);box-shadow:var(--mc-shadow);border-color:#c9c2ff}
+.mc-topic-icon{
+  width:42px;height:42px;border-radius:13px;display:grid;place-items:center;
+  background:#efecff;color:var(--mc-brand);font-size:20px;margin-bottom:14px;
+}
+.mc-topic-card h3{margin:0 0 7px;font-size:17px}
+.mc-topic-card p{color:var(--mc-muted);font-size:13px;line-height:1.55;margin:0 0 16px}
+.mc-topic-card .topic-meta{font-size:11px;color:#8a93a5;margin-top:auto;margin-bottom:12px}
+.mc-open-topic{width:100%}
+
+/* Lesson modal */
+.mc-lesson-backdrop{
+  position:fixed;inset:0;background:rgba(16,22,40,.68);z-index:10000;
+  display:flex;align-items:center;justify-content:center;padding:20px;
+  backdrop-filter:blur(7px);
+}
+.mc-lesson-modal{
+  width:min(980px,100%);height:min(90vh,900px);background:#fff;border-radius:24px;
+  box-shadow:0 30px 100px rgba(0,0,0,.28);display:flex;flex-direction:column;overflow:hidden;
+}
+.mc-lesson-head{
+  padding:18px 22px;border-bottom:1px solid var(--mc-line);
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  background:linear-gradient(120deg,#fff,#f7f5ff);
+}
+.mc-lesson-brand{display:flex;align-items:center;gap:12px;min-width:0}
+.mc-lesson-brand img{width:44px;height:44px;object-fit:contain;border-radius:12px;border:1px solid var(--mc-line)}
+.mc-lesson-brand strong{display:block;font-size:17px}
+.mc-lesson-brand span{display:block;color:var(--mc-muted);font-size:12px;margin-top:3px}
+.mc-lesson-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.mc-lesson-close{
+  border:1px solid #e1e5ee;background:#fff;border-radius:11px;padding:9px 13px;
+  cursor:pointer;font-weight:750;color:#566177;
+}
+.mc-lesson-close:hover{background:#f5f6fa}
+.mc-lesson-body{overflow:auto;padding:28px 34px 45px}
+.mc-lesson-title{font-size:31px;line-height:1.15;margin:0 0 8px;letter-spacing:-.8px}
+.mc-lesson-subtitle{color:var(--mc-muted);margin-bottom:25px}
+.mc-lesson-content section{
+  padding:0 0 22px;margin-bottom:24px;border-bottom:1px solid #edf0f5;
+}
+.mc-lesson-content section:last-child{border-bottom:0}
+.mc-lesson-content h2{font-size:20px;margin:0 0 11px;color:#28334a}
+.mc-lesson-content h3{color:var(--mc-brand)}
+.mc-lesson-content p,.mc-lesson-content li{line-height:1.8;color:#3e485c}
+.mc-lesson-content ul{padding-left:23px}
+.mc-lesson-content .formula-box{
+  background:#f6f4ff;border:1px solid #e1dcff;border-radius:12px;padding:12px 15px;margin:8px 0;
+  overflow:auto;
+}
+.mc-lesson-content .table-wrap{margin:12px 0;overflow:auto}
+.mc-lesson-content table{min-width:560px}
+.mc-lesson-footer{
+  border-top:1px solid var(--mc-line);padding:13px 20px;background:#fbfcff;
+  display:flex;justify-content:space-between;gap:10px;align-items:center;
+}
+.mc-lesson-progress{font-size:12px;color:var(--mc-muted)}
+.mc-read-btn{border:0;background:#eeeaff;color:var(--mc-brand);padding:9px 13px;border-radius:11px;font-weight:750;cursor:pointer}
+body.mc-modal-open{overflow:hidden}
+
+/* One-on-one cards */
+#tab-oneonone .grid-2> .card:first-child{border-top:4px solid #7c5cff!important}
+#tab-oneonone .grid-2> .card:last-child{border-top:4px solid #ef476f!important}
+#oneOnOneRequests>.card{background:#fbfcff!important}
+.plan-price{font-weight:850!important;color:var(--mc-brand)!important;font-size:28px!important}
+
+/* Subscription */
+.sub-status{background:linear-gradient(135deg,#f8f7ff,#fff);border:1px solid #e6e2ff;border-radius:16px;padding:17px}
+.sub-timer{font-size:25px!important;font-weight:850!important;color:var(--mc-brand)!important}
+
+/* Friendly in-page messages */
+.mc-friendly-alert{
+  border-radius:18px!important;border:1px solid var(--mc-line)!important;
+  box-shadow:0 20px 60px rgba(28,39,68,.20)!important;
+}
+.mc-friendly-alert .modal-icon{border-radius:50%!important}
+
+/* mobile */
+@media(max-width:850px){
+  .student-page .topbar{padding:0 14px!important}
+  .student-page .sidebar{position:fixed!important;z-index:9000;top:76px;bottom:0;left:-270px;transition:.2s ease}
+  .student-page .sidebar.open{left:0}
+  .student-page .main{padding:18px 13px!important}
+  .student-page .grid-3,.student-page .grid-2{grid-template-columns:1fr!important}
+  .student-page .voice-tools{align-items:flex-start!important;flex-direction:column!important}
+  .student-page .voice-tools select{width:100%!important}
+  .mc-lesson-backdrop{padding:0}
+  .mc-lesson-modal{height:100vh;border-radius:0}
+  .mc-lesson-head{padding:14px}
+  .mc-lesson-body{padding:22px 17px 35px}
+  .mc-lesson-title{font-size:25px}
+  .mc-lesson-footer{padding:10px 14px}
+}
+@media(max-width:480px){
+  .student-page .main>section>h1{font-size:26px!important}
+  .student-page .card{padding:16px!important}
+  #topicAccordionList{grid-template-columns:1fr!important}
+  .mc-topic-card{min-height:155px}
+  .mc-lesson-actions .mc-read-btn{display:none}
+}
